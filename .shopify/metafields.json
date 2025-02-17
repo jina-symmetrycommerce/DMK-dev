@@ -1,0 +1,76 @@
+{
+  "article": [],
+  "blog": [],
+  "brand": [],
+  "collection": [],
+  "company": [],
+  "company_location": [],
+  "location": [],
+  "market": [],
+  "order": [],
+  "page": [],
+  "product": [
+    {
+      "key": "skin_concern",
+      "namespace": "custom",
+      "name": "Skin Concern",
+      "description": "",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "how_to_apply",
+      "namespace": "custom",
+      "name": "How to apply",
+      "description": "How to apply instructions",
+      "type": {
+        "name": "multi_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "therapist_s_tips",
+      "namespace": "custom",
+      "name": "Therapist's Tips",
+      "description": "Therapist's tips",
+      "type": {
+        "name": "list.single_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "key_ingredients",
+      "namespace": "custom",
+      "name": "Key ingredients",
+      "description": "Key ingredients",
+      "type": {
+        "name": "list.single_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "size",
+      "namespace": "custom",
+      "name": "Size",
+      "description": "Size of product",
+      "type": {
+        "name": "single_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "product_targets",
+      "namespace": "custom",
+      "name": "Product targets",
+      "description": "Main skin concerns the product targets",
+      "type": {
+        "name": "single_line_text_field",
+        "category": "TEXT"
+      }
+    }
+  ],
+  "variant": [],
+  "shop": []
+}
