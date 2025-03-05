@@ -1,0 +1,199 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_banner_wzprWh": {
+      "type": "image-banner",
+      "blocks": {
+        "text_tz8AnQ": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Welcome to the DMK Skincare revolution!</strong><br/>The DMK skincare revolution is about more than just beauty; it's about profound change.<br/><strong>We believe that real transformation starts from understanding the intricate interplay of your skin’s ecosystem.</strong><br/>DMK is on a mission to transform your skin and unleash the brilliance in you because everyone deserves great skin. <strong>Join us.</strong></p>",
+            "text_size": "typeset",
+            "secondary_color": false
+          }
+        },
+        "heading_dKXUGY": {
+          "type": "heading",
+          "settings": {
+            "heading": "JOIN THE DMK SKINCARE REVOLUTION",
+            "heading_size": "h2",
+            "heading_tag": "h2"
+          }
+        }
+      },
+      "block_order": [
+        "text_tz8AnQ",
+        "heading_dKXUGY"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/20200220_MP_0733.jpg",
+        "image_position": "80% 50%",
+        "text_box_position": "top-right",
+        "text_alignment": "right",
+        "image_ratio": "550px",
+        "show_text_box": false,
+        "full_width": true,
+        "show_divider": false,
+        "image_behavior": "none",
+        "mobile_text_alignment": "center",
+        "mobile_image_ratio": "200px",
+        "stack_images_on_mobile": true,
+        "show_text_below": true,
+        "colors_button_label": "#1a1b18",
+        "colors_button_background": "#ffffff",
+        "colors_text": "#ffffff",
+        "colors_overlay": "#000000",
+        "colors_overlay_opacity": 52,
+        "padding_top": 0,
+        "padding_bottom": 36
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "narrow": false,
+        "padding_top": 60,
+        "padding_bottom": 72
+      }
+    },
+    "multicolumn_PkhNdJ": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_dr3k4Q": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Fundamentals-Level-1-800x800.png",
+            "title": "",
+            "title_size": "h4",
+            "text": "<p>This is your gateway to becoming an esteemed DMK Certified Paramedical Skin Therapist. Immerse yourself in a 2.5-hour theoretical webinar and step into a realm of unparalleled skincare knowledge.<br/><br/><strong>Unlock exclusive benefits: </strong>Upon completion, you will be endowed with a DMK account, granting you the privilege to order our revolutionary Enzyme Masque #1.</p>",
+            "button_label": "Sign Up",
+            "button_link": "https://mydmk.dannemking.com/event_detail/2204",
+            "button_style_secondary": false
+          }
+        },
+        "column_eehmLY": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Paramedical-Level-3-2048x2048.png",
+            "title": "",
+            "title_size": "h3",
+            "text": "<p>Engage in a unique, 2-day intensive course, delving deep into theories and acquiring hands-on experience with DMK advanced skin revision treatments.<br/><br/><strong>Exclusive Access:</strong> This program is exclusively available to Licensed Estheticians who have completed our introductory level (Fundamentals of Skin Revision webinar).</p>",
+            "button_label": "Sign Up",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
+        "column_UX3hbG": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/ProgramOne-Level-2-2048x2048.png",
+            "title": "",
+            "title_size": "h3",
+            "text": "<p>This advanced class will cover Pro Alpha Peel, Remodeling Procedure, Alkaline Wash, and StemZyme with a deep dive into protocols.</p><p><strong>This is an invitation-only, hands-on, advanced paramedical skin revision certification.</strong> Class price includes a StemZyme kit, order placed once the class is complete. Space is limited. Program One and online prerequisites are required for admittance. <em>Contact your DMK account manager for more details.</em></p>",
+            "button_label": "Contact Us",
+            "button_link": "shopify://pages/contact",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "column_dr3k4Q",
+        "column_eehmLY",
+        "column_UX3hbG"
+      ],
+      "settings": {
+        "image_ratio": "square",
+        "image_position": "center center",
+        "text_alignment": "left",
+        "show_divider": false,
+        "image_width": "full",
+        "columns_desktop": 3,
+        "open_in_new_tab": true,
+        "heading": "",
+        "heading_size": "h1",
+        "heading_alignment": "left",
+        "heading_tag": "h2",
+        "mobile_text_alignment": "left",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 52
+      }
+    },
+    "multicolumn_YEckCN": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_WKjAHQ": {
+          "type": "column",
+          "settings": {
+            "title": "We put estheticians, first",
+            "title_size": "h3",
+            "text": "<p>We do not sell directly to the end-consumer, and we never will. Once you become a DMK Certified Esthetician, our team has your back to help you boost your business the right way.</p>",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
+        "column_PKnYjg": {
+          "type": "column",
+          "settings": {
+            "title": "Get advanced education",
+            "title_size": "h3",
+            "text": "<p>Elevate your expertise with our comprehensive training programs, designed to empower you with advanced skincare knowledge and techniques.</p>",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
+        "column_BG6cH7": {
+          "type": "column",
+          "settings": {
+            "title": "Enhanced credibility",
+            "title_size": "h3",
+            "text": "<p>Gain recognition and credibility by offering certified and proven skin treatments and stand out in the competitive skincare industry.</p>",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "column_WKjAHQ",
+        "column_PKnYjg",
+        "column_BG6cH7"
+      ],
+      "settings": {
+        "image_ratio": "landscape",
+        "image_position": "center center",
+        "text_alignment": "left",
+        "show_divider": true,
+        "image_width": "full",
+        "columns_desktop": 3,
+        "open_in_new_tab": false,
+        "heading": "Why DMK?",
+        "heading_size": "h1",
+        "heading_alignment": "center",
+        "heading_tag": "h2",
+        "mobile_text_alignment": "center",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 52,
+        "padding_bottom": 48
+      }
+    }
+  },
+  "order": [
+    "image_banner_wzprWh",
+    "main",
+    "multicolumn_PkhNdJ",
+    "multicolumn_YEckCN"
+  ]
+}

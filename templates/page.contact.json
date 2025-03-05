@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "image-banner": {
@@ -7,14 +16,16 @@
           "type": "heading",
           "settings": {
             "heading": "Contact Us",
-            "heading_size": "h0"
+            "heading_size": "h0",
+            "heading_tag": "h2"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "text": "<p>Questions? Comments? Let your customers get in touch with you by filling out the email form below.</p>",
-            "text_size": "typeset3"
+            "text": "<p>Questions? Comments? Let us know for more information.</p>",
+            "text_size": "typeset3",
+            "secondary_color": false
           }
         }
       },
@@ -23,16 +34,21 @@
         "text"
       ],
       "settings": {
-        "image": "",
+        "image": "shopify://shop_images/Image-2048x1152.png",
         "image_position": "top center",
-        "text_box_position": "bottom-right",
+        "text_box_position": "bottom-left",
         "text_alignment": "left",
-        "image_ratio": "550px",
+        "image_ratio": "500px",
+        "show_text_box": false,
         "full_width": true,
+        "show_divider": false,
+        "image_behavior": "none",
         "mobile_text_alignment": "left",
         "mobile_image_ratio": "250px",
         "stack_images_on_mobile": true,
         "show_text_below": true,
+        "colors_button_label": "{{ shop.brand.colors.primary[0].background }}",
+        "colors_button_background": "{{ shop.brand.colors.primary[0].foreground }}",
         "colors_text": "#ffffff",
         "colors_overlay": "#000000",
         "colors_overlay_opacity": 28,
@@ -52,36 +68,60 @@
     "form": {
       "type": "contact-form",
       "blocks": {
+        "custom_field_hByQ8R": {
+          "type": "custom_field",
+          "settings": {
+            "type": "select",
+            "label": "Inquiry Type",
+            "required": false,
+            "checked_value": "Yes",
+            "unchecked_value": "No",
+            "radio_options": "",
+            "select_options": "General Inquires, International Inquires, How to Become a DMK Esthetician, Question about DMK Products & Treatments, Question about your Skin Concerns, Social Media Collaborations, Website Technical Issues"
+          }
+        },
+        "custom_field_RFqX7B": {
+          "type": "custom_field",
+          "settings": {
+            "type": "text",
+            "label": "Business / Clinic Name",
+            "required": true,
+            "checked_value": "Yes",
+            "unchecked_value": "No",
+            "radio_options": "",
+            "select_options": ""
+          }
+        },
+        "custom_field_Bh3m7y": {
+          "type": "custom_field",
+          "settings": {
+            "type": "textarea",
+            "label": "Adress",
+            "required": true,
+            "checked_value": "Yes",
+            "unchecked_value": "No",
+            "radio_options": "",
+            "select_options": ""
+          }
+        },
+        "custom_field_aw3JQ9": {
+          "type": "custom_field",
+          "settings": {
+            "type": "text",
+            "label": "MD, PA, NP, RN, COS, LE License Number",
+            "required": false,
+            "checked_value": "Yes",
+            "unchecked_value": "No",
+            "radio_options": "",
+            "select_options": ""
+          }
+        },
         "contact-0": {
           "type": "contact",
           "settings": {
             "heading": "Information",
-            "text": "info@yourstore.com",
-            "link": "mailto:info@yourstore.com"
-          }
-        },
-        "contact-1": {
-          "type": "contact",
-          "settings": {
-            "heading": "Customer service",
-            "text": "shop@yourstore.com",
-            "link": "mailto:shop@yourstore.com"
-          }
-        },
-        "contact-2": {
-          "type": "contact",
-          "settings": {
-            "heading": "Sales",
-            "text": "sales@yourstore.com",
-            "link": "mailto:sales@yourstore.com"
-          }
-        },
-        "contact-3": {
-          "type": "contact",
-          "settings": {
-            "heading": "Press",
-            "text": "press@yourstore.com",
-            "link": "mailto:press@yourstore.com"
+            "text": "info@dannemking.com",
+            "link": "mailto:info@dannemking.com"
           }
         },
         "media": {
@@ -92,15 +132,20 @@
         }
       },
       "block_order": [
+        "custom_field_hByQ8R",
+        "custom_field_RFqX7B",
+        "custom_field_Bh3m7y",
+        "custom_field_aw3JQ9",
         "contact-0",
-        "contact-1",
-        "contact-2",
-        "contact-3",
         "media"
       ],
       "settings": {
-        "heading": "Get in touch",
+        "return_url": "",
         "show_phone": true,
+        "show_divider": false,
+        "heading": "Get in touch",
+        "heading_size": "h2",
+        "heading_tag": "h2",
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -111,48 +156,43 @@
         "map-0": {
           "type": "heading",
           "settings": {
-            "heading": "Our Store",
-            "heading_size": "h2"
+            "heading": "DMK World Headquarters",
+            "heading_size": "h2",
+            "heading_tag": "h2"
           }
         },
         "map-1": {
           "type": "text",
           "settings": {
-            "text": "<p>620 King Street West<br\/>Toronto, ON M5V 1M7, Canada<\/p><p>Mon - Fri, 8:30am - 10:30pm<br\/>Saturday, 8:30am - 10:30pm<br\/>Sunday, 8:30am - 10:30pm<\/p>",
+            "text": "<p>10420 Pioneer Blvd.<br/>Los Angeles, CA 90670 USA</p><p><strong>+1 562 944-0230</strong></p>",
             "text_size": "typeset",
             "secondary_color": false
-          }
-        },
-        "map-2": {
-          "type": "button",
-          "settings": {
-            "button_label": "Get directions",
-            "button_link": "",
-            "button_style_secondary": false
           }
         }
       },
       "block_order": [
         "map-0",
-        "map-1",
-        "map-2"
+        "map-1"
       ],
       "settings": {
-        "map_address": "620 King St W, Toronto, ON M5V 1M7, Canada",
+        "map_address": "10420 Pioneer Blvd.Los Angeles, CA 90670 USA",
         "map_api_key": "",
         "map_zoom": 14,
         "map_style": "standard",
         "image_position": "center center",
         "text_box_position": "middle-left",
         "text_alignment": "left",
-        "image_ratio": "550px",
+        "image_ratio": "400px",
         "full_width": true,
         "show_divider": false,
         "mobile_text_box_position": "image_first",
         "mobile_text_alignment": "left",
         "mobile_image_ratio": "400px",
-        "colors_text": "#1a1b18",
-        "colors_overlay": "#ffffff",
+        "colors_button_label": "#ffffff",
+        "colors_button_background": "#1a1b18",
+        "colors_text": "#ffffff",
+        "colors_overlay": "{{ shop.brand.colors.primary[0].background }}",
+        "gradient_overlay": "",
         "colors_overlay_opacity": 100,
         "padding_top": 36,
         "padding_bottom": 0

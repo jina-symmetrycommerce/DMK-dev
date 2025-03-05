@@ -1,4 +1,5 @@
 /* Derived from base colors (theme settings) */
+
 :root {
   --color-foreground: var(--color-base-text);
   --color-background: var(--color-base-background);

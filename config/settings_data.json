@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "colors_solid_button_labels": "#FFFFFF",
@@ -55,15 +64,25 @@
     "cart_recommendations_heading": "You may also like",
     "cart_recommendations_show_vendor": true,
     "predictive_search_show_vendor": true,
+    "social_facebook_link": "https://www.facebook.com/dmkinternational",
+    "social_twitter_link": "https://twitter.com/DMKIntlHQ",
+    "social_instagram_link": "https://www.instagram.com/dmkinternational/",
+    "social_youtube_link": "https://www.youtube.com/c/DMKSkincare",
     "gift_card_logo_height": 70,
     "sections": {
       "main-password-header": {
         "type": "main-password-header",
-        "settings": { "logo_height": 50, "show_line_separator": true }
+        "settings": {
+          "logo": "shopify://shop_images/DMK_LOGO___PMS-627C.png",
+          "logo_height": 80,
+          "show_line_separator": false
+        }
       },
       "main-password-footer": {
         "type": "main-password-footer",
-        "settings": { "show_line_separator": false }
+        "settings": {
+          "show_line_separator": false
+        }
       }
     },
     "content_for_index": []
@@ -129,11 +148,16 @@
       "sections": {
         "main-password-header": {
           "type": "main-password-header",
-          "settings": { "logo_height": 50, "show_line_separator": true }
+          "settings": {
+            "logo_height": 50,
+            "show_line_separator": true
+          }
         },
         "main-password-footer": {
           "type": "main-password-footer",
-          "settings": { "show_line_separator": false }
+          "settings": {
+            "show_line_separator": false
+          }
         }
       }
     },
@@ -197,11 +221,16 @@
       "sections": {
         "main-password-header": {
           "type": "main-password-header",
-          "settings": { "logo_height": 50, "show_line_separator": true }
+          "settings": {
+            "logo_height": 50,
+            "show_line_separator": true
+          }
         },
         "main-password-footer": {
           "type": "main-password-footer",
-          "settings": { "show_line_separator": false }
+          "settings": {
+            "show_line_separator": false
+          }
         }
       }
     },
@@ -265,11 +294,16 @@
       "sections": {
         "main-password-header": {
           "type": "main-password-header",
-          "settings": { "logo_height": 50, "show_line_separator": true }
+          "settings": {
+            "logo_height": 50,
+            "show_line_separator": true
+          }
         },
         "main-password-footer": {
           "type": "main-password-footer",
-          "settings": { "show_line_separator": false }
+          "settings": {
+            "show_line_separator": false
+          }
         }
       }
     },
@@ -333,13 +367,24 @@
       "sections": {
         "main-password-header": {
           "type": "main-password-header",
-          "settings": { "logo_height": 50, "show_line_separator": true }
+          "settings": {
+            "logo_height": 50,
+            "show_line_separator": true
+          }
         },
         "main-password-footer": {
           "type": "main-password-footer",
-          "settings": { "show_line_separator": false }
+          "settings": {
+            "show_line_separator": false
+          }
         }
       }
     }
+  },
+  "platform_customizations": {
+    "custom_css": [
+      "h1,h2,h3,h4,h5,h6 {font-family: \"Graphik Condensed\" !important; font-style: bold;}",
+      "* {font-family: \"Graphik\" !important;}"
+    ]
   }
 }

@@ -1,1 +1,98 @@
-{"name":"t:sections.header-group.name","type":"header","sections":{"announcement-bar":{"type":"announcement-bar","blocks":{"announcement-bar-0":{"type":"announcement","settings":{"text":"Welcome to our store","text_on_mobile":"","text_size":13,"link":""}}},"block_order":["announcement-bar-0"],"settings":{"only_homepage":true,"layout":"default","mobile_layout":"carousel","autorotate":true,"autorotate_speed":5,"show_navigation":true,"direction":"left","speed":1.6,"colors_text":"{{ shop.brand.colors.primary[0].foreground }}","colors_background":"{{ shop.brand.colors.secondary[0].foreground }}","gradient_background":"","padding_top":0,"padding_bottom":0}},"header":{"type":"header","settings":{"logo":"{{ shop.brand.logo }}","logo_height":50,"mobile_logo_height":44,"logo_position":"top-center","menu":"main-menu","menu_mobile":"main-menu","enable_dropdown_menu":true,"show_line_separator":true,"uppercase_menu_items":true,"cart_icon":"cart","icon_weight":"1.1","enable_country_selector":true,"enable_language_selector":true,"enable_sticky_header":true,"show_sticky_header_scroll_up":false,"enable_transparent_header":false,"enable_transparent_header_collection":false,"enable_transparent_header_custom":"","show_transparent_header_border":false,"transparent_text_color":"#ffffff","enable_highlight":true,"highlight_labels":"Catalog","highlight_style":"circle","mobile_logo_position":"center","colors_text":"{{ shop.brand.colors.secondary[0].background }}","colors_border":"{{ shop.brand.colors.secondary[1].background }}","colors_background":"#ffffff","gradient_background":"","colors_highlight":"{{ shop.brand.colors.primary[0].foreground }}","padding_top":16,"padding_bottom":12}}},"order":["announcement-bar","header"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header-group.name",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-bar-0": {
+          "type": "announcement",
+          "disabled": true,
+          "settings": {
+            "text": "See the DMK PROFESSIONAL difference",
+            "text_on_mobile": "",
+            "text_size": 13,
+            "link": ""
+          }
+        },
+        "announcement_HVQatr": {
+          "type": "announcement",
+          "settings": {
+            "text": "Learn more about DMK Skincare here",
+            "text_on_mobile": "",
+            "text_size": 13,
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement-bar-0",
+        "announcement_HVQatr"
+      ],
+      "settings": {
+        "only_homepage": true,
+        "layout": "default",
+        "mobile_layout": "carousel",
+        "autorotate": true,
+        "autorotate_speed": 5,
+        "show_navigation": true,
+        "direction": "left",
+        "speed": 1.6,
+        "colors_text": "{{ shop.brand.colors.secondary[0].foreground }}",
+        "colors_background": "{{ shop.brand.colors.primary[0].background }}",
+        "gradient_background": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo": "{{ shop.brand.logo }}",
+        "logo_height": 50,
+        "mobile_logo_height": 44,
+        "logo_position": "top-center",
+        "menu": "main-menu",
+        "menu_mobile": "main-menu",
+        "enable_dropdown_menu": true,
+        "show_line_separator": false,
+        "uppercase_menu_items": true,
+        "cart_icon": "cart",
+        "icon_weight": "1.1",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "enable_sticky_header": true,
+        "show_sticky_header_scroll_up": false,
+        "enable_transparent_header": false,
+        "enable_transparent_header_collection": false,
+        "enable_transparent_header_custom": "",
+        "show_transparent_header_border": false,
+        "transparent_text_color": "#ffffff",
+        "enable_highlight": true,
+        "highlight_labels": "Catalog",
+        "highlight_style": "circle",
+        "mobile_logo_position": "center",
+        "colors_text": "{{ shop.brand.colors.secondary[0].background }}",
+        "colors_border": "{{ shop.brand.colors.secondary[1].background }}",
+        "colors_background": "#f5f5f5",
+        "gradient_background": "",
+        "colors_highlight": "{{ shop.brand.colors.primary[0].foreground }}",
+        "padding_top": 16,
+        "padding_bottom": 12
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header"
+  ]
+}

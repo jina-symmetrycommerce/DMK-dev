@@ -19,7 +19,7 @@
     assign use_variant = true
   endif
 
-  assign uniqueId = 'now' | date: '%N' | modulo: 1000
+  assign uniqueId = "now" | date: "%N" | modulo: 1000
 -%}
 
 {% render 'css-variables' %}
@@ -48,18 +48,14 @@
         <div class="card-information">
           <div class="card-information__wrapper">
             <div class="card-article-info caption-with-letter-spacing">{{ product.vendor }}</div>
-
+      
             {% render 'price', product: product, use_variant: use_variant %}
           </div>
-
+      
           <div class="card-information__button{% if options_count == 2 and has_color_option %} is-expanded{% endif %}">
             {%- if options_count == 1 -%}
               {%- if product.selected_variant.available -%}
-                <add-to-cart
-                  class="button button--small"
-                  data-variant-id="{{ product.selected_variant.id }}"
-                  tabindex="-1"
-                >
+                <add-to-cart class="button button--small" data-variant-id="{{ product.selected_variant.id }}" tabindex="-1">
                   {%- liquid
                     if product.template_suffix != 'pre-order'
                       echo 'products.product.add_to_cart' | t
@@ -69,9 +65,7 @@
                   -%}
                 </add-to-cart>
               {%- else -%}
-                <button class="button button--small button--soldout" type="button" disabled="disabled">
-                  {{ 'products.product.sold_out' | t }}
-                </button>
+                <button class="button button--small button--soldout" type="button" disabled="disabled">{{ 'products.product.sold_out' | t }}</button>
               {%- endif -%}
             {%- else -%}
               {%- if options_count == 2 and has_color_option -%}
@@ -84,12 +78,11 @@
                       if swatch_trigger contains downcased_option
                         assign is_color = true
                       endif
-
+      
                       assign option_idx = forloop.index
                       assign color_count = 0
                     -%}
-                    <fieldset
-                      class="js variant-input-wrapper{% if is_color %} hidden{% endif %}"
+                    <fieldset class="js variant-input-wrapper{% if is_color %} hidden{% endif %}"
                       data-option-index="option{{ option_idx }}"
                       data-option-slug="{{ option.name | handleize }}"
                     >
@@ -101,22 +94,17 @@
                               type="radio"
                               name="{{ option.name }}-{{ product.id }}-{{ uniqueId }}"
                               value="{{ value | escape }}"
-                              {%- if option.selected_value == value %}
-                                checked="checked"
-                              {% endif -%}
+                              {%- if option.selected_value == value %}checked="checked"{% endif -%}
                               data-option-value="{{ value | escape }}"
                               class="visually-hidden"
-                            >
+                            />
                             {{ value }}
                           </label>
                         {%- endif -%}
                       {%- endfor -%}
                       {%- if color_count > max_count -%}
                         {%- if settings.quick_view_enabled -%}
-                          <quick-view-button
-                            class="link link--text"
-                            data-product-url="{{ product.url | within: collection }}"
-                          >
+                          <quick-view-button class="link link--text" data-product-url="{{ product.url | within: collection }}">
                             <small>+{{ color_count | minus: max_count }}</small>
                           </quick-view-button>
                         {%- else -%}
@@ -127,23 +115,18 @@
                       {%- endif -%}
                     </fieldset>
                   {%- endfor -%}
-
+                  
                   <script type="application/json">
                     {{ product.variants | json }}
                   </script>
                 </color-swatch-radios>
               {%- else -%}
                 {%- if settings.quick_view_enabled -%}
-                  <quick-view-button
-                    class="button button--small"
-                    data-product-url="{{ product.url | within: collection }}"
-                  >
+                  <quick-view-button class="button button--small" data-product-url="{{ product.url | within: collection }}">
                     {{ 'products.product.choose_options' | t }}
                   </quick-view-button>
                 {%- else -%}
-                  <a href="{{ product.url | within: collection }}" class="button button--small" tabindex="-1">
-                    {{- 'products.product.view' | t -}}
-                  </a>
+                  <a href="{{ product.url | within: collection }}" class="button button--small" tabindex="-1">{{ 'products.product.view' | t }}</a>
                 {%- endif -%}
               {%- endif -%}
             {%- endif -%}

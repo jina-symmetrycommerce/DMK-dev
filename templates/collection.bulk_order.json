@@ -22,7 +22,7 @@
         "mobile_text_alignment": "left",
         "mobile_image_ratio": "250px",
         "show_text_below": false,
-        "padding_top": 20,
+        "padding_top": 0,
         "padding_bottom": 36
       }
     },
@@ -94,68 +94,53 @@
         "padding_bottom": 36
       }
     },
-    "image_banner_U7BhcU": {
-      "type": "image-banner",
+    "multicolumn": {
+      "type": "multicolumn",
       "blocks": {
-        "heading_WNBF9E": {
-          "type": "heading",
+        "column-0": {
+          "type": "column",
           "settings": {
-            "heading": "Are you DMK-certified?",
-            "heading_size": "h1",
-            "heading_tag": "h2"
-          }
-        },
-        "text_iinaFq": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Discover how DMK can enhance your skills and grow your business. Start your journey today and open the door to new opportunities.</p>",
-            "text_size": "typeset",
-            "secondary_color": false
-          }
-        },
-        "button_zVipwB": {
-          "type": "button",
-          "settings": {
-            "button_label": "Read more",
-            "button_link": "shopify://pages/become-a-dmk-professional",
-            "button_size": "medium",
+            "title": "Site-wide promotion",
+            "title_size": "h2",
+            "text": "<p>Use this section to promote content throughout every page of your site. Add images for further impact.</p>",
+            "button_label": "Button label",
+            "button_link": "",
             "button_style_secondary": false
           }
         },
-        "custom_liquid_7RW7mz": {
-          "type": "custom_liquid",
+        "column-1": {
+          "type": "column",
           "settings": {
-            "custom_liquid": "<div class=\"custom-overlay-container\">\n  <img \n    src=\"https://cdn.shopify.com/s/files/1/0891/1811/4159/files/cta-certified-tagline.png?v=1741115975\" \n    class=\"custom-overlay-image\" \n    alt=\"Overlay Image\"\n    style=\"\n      width: 200px; /* Adjust width as needed */\n      top: 85%;  /* Adjust position */\n      left: 185%; /* Adjust position */\n    \"\n  >\n</div>\n\n<style>\n.custom-overlay-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  pointer-events: none;\n}\n\n.custom-overlay-image {\n  position: absolute;\n  transform: translate(-50%, -50%);\n  max-width: 100%;\n}\n</style>"
+            "title": "Site-wide promotion",
+            "title_size": "h2",
+            "text": "<p>Use this section to promote content throughout every page of your site. Add images for further impact.</p>",
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style_secondary": false
           }
         }
       },
       "block_order": [
-        "heading_WNBF9E",
-        "text_iinaFq",
-        "button_zVipwB",
-        "custom_liquid_7RW7mz"
+        "column-0",
+        "column-1"
       ],
       "settings": {
-        "image": "shopify://shop_images/20200220_MP_0997.jpg",
-        "image_position": "80% 50%",
-        "text_box_position": "middle-left",
-        "text_alignment": "left",
-        "image_ratio": "400px",
-        "show_text_box": false,
-        "full_width": true,
+        "image_ratio": "wide",
+        "image_position": "center center",
+        "text_alignment": "center",
         "show_divider": false,
-        "image_behavior": "none",
+        "image_width": "full",
+        "columns_desktop": 3,
+        "open_in_new_tab": false,
+        "heading": "More to Discover",
+        "heading_size": "h1",
+        "heading_alignment": "left",
+        "heading_tag": "h2",
         "mobile_text_alignment": "center",
-        "mobile_image_ratio": "200px",
-        "stack_images_on_mobile": true,
-        "show_text_below": true,
-        "colors_button_label": "#ffffff",
-        "colors_button_background": "{{ shop.brand.colors.primary[0].foreground }}",
-        "colors_text": "#ffffff",
-        "colors_overlay": "#000000",
-        "colors_overlay_opacity": 32,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
         "padding_top": 36,
-        "padding_bottom": 0
+        "padding_bottom": 72
       }
     }
   },
@@ -164,6 +149,6 @@
     "subs",
     "product-grid",
     "recently-viewed",
-    "image_banner_U7BhcU"
+    "multicolumn"
   ]
 }
