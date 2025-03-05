@@ -1,0 +1,8 @@
+{
+  "sections": {
+    "bulk-order": {
+      "type": "bulk-order"
+    }
+  },
+  "order": ["bulk-order"]
+}

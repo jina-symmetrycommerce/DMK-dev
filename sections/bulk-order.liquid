@@ -1,0 +1,110 @@
+{% comment %}
+  {% paginate collections.all.products by 25, window_size: 1 %}
+    {% for product in collections.all.products %}
+      <p>
+        {{ product.title }}
+      </p>
+    {% endfor %}
+    {{- paginate | default_pagination }}
+  {% endpaginate %}
+{% endcomment %}
+<div class="bulk-order-table page-width">
+  <div class="bulk-order-header">
+    <form class="bulk-order-filter">
+      <fieldset class="collections-container">
+        <label for="collections">Collections: </label>
+        <select name="collections" id="collections">
+          {% for collection in collections %}
+            <option value="{{ collection.handle }}">{{ collection.title }}</option>
+          {% endfor %}
+        </select>
+      </fieldset>
+      <div class="search-container">
+        <select name="search-by" id="search-by">
+          <option value="title">Title</option>
+          <option value="sku">SKU</option>
+          <option value="tag">Tag</option>
+        </select>
+        <input type="text" id="search" name="search" placeholder="Search">
+      </div>
+    </form>
+  </div>
+  <table class="bulk-order-body">
+    {% for product in collections.all.all_products %}
+      {% for variant in product.variants %}
+        <tr>
+          <td>
+            {% if variant.featured_image != blank %}
+              <img src="{{ variant | image_url: height: 100}}">
+            {% elsif product.featured_image != blank %}
+              <img src="{{ product | image_url: height: 100}}">
+            {% endif %}
+          </td>
+          <td>
+            <div>
+              {% if variant.title == 'Default Title' %}
+                {{ product.title }}
+              {% else %}
+                {{ variant.title }}
+              {% endif %}
+            </div>
+            <div>{{ variant.price | money }}</div>
+          </td>
+          <td>SKU: {{ variant.sku }}</td>
+          <td>Stock: {{ variant.inventory_quantity }}</td>
+          <td>
+            <add-to-cart class="button button--small" data-variant-id="{{ variant.id }}"> Add to Cart </add-to-cart>
+          </td>
+        </tr>
+      {% endfor %}
+    {% endfor %}
+  </table>
+</div>
+
+{% style %}
+  .bulk-order-table {
+    width: 100%;
+  }
+  .bulk-order-header {
+    background-color: rgb(var(--color-button-background));
+    color: rgb(var(--color-button-text));
+  }
+  .bulk-order-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 4rem;
+  }
+  .bulk-order-container .collections-container {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+  .bulk-order-filter select {
+    font-family: var(--font-body-family);
+  }
+  .bulk-order-body {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .bulk-order-body tr {
+    border-bottom: 2px solid rgb(var(--color-border));
+    height: 100px;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Bulk Order",
+  "class": "bulk-order-container",
+  "limit": 1,
+  "presets": [
+    {
+      "name": "Bulk Order"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}
