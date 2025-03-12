@@ -8,9 +8,10 @@
     {{- paginate | default_pagination }}
   {% endpaginate %}
 {% endcomment %}
-<div class="bulk-order-table page-width">
-  <div class="bulk-order-header">
-    <form class="bulk-order-filter">
+<script src="{{ 'bulk-order-form.js' | asset_url }}" defer="defer"></script>
+<bulk-order-form>
+  <div class="bulk-order-container page-width">
+    <form id="bulk-order-filter" class="bulk-order-filter">
       <fieldset class="collections-container">
         <label for="collections">Collections: </label>
         <select name="collections" id="collections">
@@ -28,60 +29,105 @@
         <input type="text" id="search" name="search" placeholder="Search">
       </div>
     </form>
+    <form id="bulk-order-form" class="bulk-order-form">
+      <table class="bulk-order-body">
+        {% for product in collections.all.all_products %}
+          {% for variant in product.variants %}
+            <tr>
+              <td>
+                {% if variant.featured_image != blank %}
+                  <img src="{{ variant | image_url: height: 100}}">
+                {% elsif product.featured_image != blank %}
+                  <img src="{{ product | image_url: height: 100}}">
+                {% endif %}
+              </td>
+              <td>
+                <div>
+                  {% if variant.title == 'Default Title' %}
+                    {{ product.title }}
+                  {% else %}
+                    {{ variant.title }}
+                  {% endif %}
+                </div>
+                <div>{{ variant.price | money }}</div>
+              </td>
+              {% comment %} <td>SKU: {{ variant.sku }}</td> {% endcomment %}
+              <td>Stock: {{ variant.inventory_quantity }}</td>
+              <td>
+                <label for="Quantity-{{ variant.id }}" class="visually-hidden">
+                  {{- 'products.product.quantity.label' | t -}}
+                </label>
+                <quantity-input class="quantity">
+                  <button class="quantity__button no-js-hidden" name="minus" type="button">
+                    <span class="visually-hidden">
+                      {{- 'products.product.quantity.decrease' | t: product: variant.title | escape -}}
+                    </span>
+                    {% render 'icon', icon: 'minus' %}
+                  </button>
+                  <input
+                    class="quantity__input"
+                    type="number"
+                    data-quantity-variant-id="{{ variant.id }}"
+                    name="quantity-{{ variant.id }}"
+                    value="0"
+                    {% # theme-check-disable %}
+                    data-cart-quantity="{{ cart | item_count_for_variant: variant.id }}"
+                    min="0"
+                    data-min="{{ variant.quantity_rule.min }}"
+                    {% if variant.quantity_rule.max != null %}
+                      max="{{ variant.quantity_rule.max }}"
+                    {% endif %}
+                    step="{{ variant.quantity_rule.increment }}"
+                    {% # theme-check-enable %}
+                    aria-label="{{ 'products.product.quantity.input_label' | t: product: variant.title | escape }}"
+                    id="Quantity-{{ variant.id }}"
+                  >
+                  <button class="quantity__button no-js-hidden" name="plus" type="button">
+                    <span class="visually-hidden">
+                      {{- 'products.product.quantity.increase' | t: product: variant.title | escape -}}
+                    </span>
+                    {% render 'icon', icon: 'plus' %}
+                  </button>
+                </quantity-input>
+              </td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+      </table>
+    </form>
+    <div class="add-to-cart-container page-width">
+      <button
+        id="bulk-order-form__submit"
+        type="submit"
+        name="bulkorderadd"
+        form="bulk-order-form"
+        class="bulk-order-form__submit button button--small"
+      >
+        Add all to cart
+      </button>
+    </div>
   </div>
-  <table class="bulk-order-body">
-    {% for product in collections.all.all_products %}
-      {% for variant in product.variants %}
-        <tr>
-          <td>
-            {% if variant.featured_image != blank %}
-              <img src="{{ variant | image_url: height: 100}}">
-            {% elsif product.featured_image != blank %}
-              <img src="{{ product | image_url: height: 100}}">
-            {% endif %}
-          </td>
-          <td>
-            <div>
-              {% if variant.title == 'Default Title' %}
-                {{ product.title }}
-              {% else %}
-                {{ variant.title }}
-              {% endif %}
-            </div>
-            <div>{{ variant.price | money }}</div>
-          </td>
-          <td>SKU: {{ variant.sku }}</td>
-          <td>Stock: {{ variant.inventory_quantity }}</td>
-          <td>
-            <add-to-cart class="button button--small" data-variant-id="{{ variant.id }}"> Add to Cart </add-to-cart>
-          </td>
-        </tr>
-      {% endfor %}
-    {% endfor %}
-  </table>
-</div>
+</bulk-order-form>
 
 {% style %}
-  .bulk-order-table {
+  .bulk-order-container {
     width: 100%;
   }
-  .bulk-order-header {
+  .bulk-order-filter {
     background-color: rgb(var(--color-button-background));
     color: rgb(var(--color-button-text));
-  }
-  .bulk-order-filter {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 4rem;
   }
+  .bulk-order-filter select {
+    font-family: var(--font-body-family);
+  }
   .bulk-order-container .collections-container {
     border: none;
     padding: 0;
     margin: 0;
-  }
-  .bulk-order-filter select {
-    font-family: var(--font-body-family);
   }
   .bulk-order-body {
     width: 100%;
@@ -90,6 +136,48 @@
   .bulk-order-body tr {
     border-bottom: 2px solid rgb(var(--color-border));
     height: 100px;
+  }
+  .bulk-order-body td {
+    padding: 0 1rem;
+  }
+  .bulk-order-body .quantity {
+    width: 10rem;
+    border: 0.1rem solid rgba(var(--color-border), 0.6);
+    padding: 0.2rem 0;
+    border-radius: min(var(--button-radius), 0.2rem);
+  }
+  .bulk-order-body .quantity__button {
+    flex: 0 0 2rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: transparent;
+  }
+
+  .bulk-order-container .add-to-cart-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: block;
+    text-align: end;
+    z-index: 100;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    transition: transform var(--duration-default) ease, opacity var(--duration-default) ease;
+    transition-delay: var(--duration-default);
+  }
+  .bulk-order-container .add-to-cart-container::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(var(--color-background));
+  }
+  .bulk-order-form__submit {
+    z-index: 200;
   }
 {% endstyle %}
 
