@@ -1,6 +1,8 @@
 class BulkOrderForm extends HTMLElement {
   constructor() {
     super();
+  }
+  connectedCallback() {
     this.form = this.querySelector("#bulk-order-form");
     this.filter = this.querySelector("#bulk-order-filter");
     this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
@@ -8,6 +10,15 @@ class BulkOrderForm extends HTMLElement {
     this.addToCartButton = this.querySelector("#bulk-order-form__submit");
     this.cart = document.querySelector("mini-cart");
     this.hideErrors = this.dataset.hideErrors === "true";
+    this.pageUrl = this.dataset.pageUrl;
+
+    let timeoutId;
+    window.addEventListener("scroll", () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        this.infiniteScroll();
+      }, 200); // Debounce the scroll event
+    });
   }
   onSubmitHandler(evt) {
     evt.preventDefault();
@@ -114,6 +125,92 @@ class BulkOrderForm extends HTMLElement {
     if (errorMessage) {
       this.errorMessage.textContent = errorMessage;
     }
+  }
+  infiniteScroll() {
+    const documentHeight = document.documentElement.scrollHeight; // Height of the document
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop; // Current scroll position
+    const windowHeight = window.innerHeight; // Height of the viewport
+
+    if (documentHeight - windowHeight < scrollTop + windowHeight) {
+      const scrollNode = document.querySelector(
+        ".bulk-order-form-more.current"
+      );
+      const scrollLink = scrollNode?.querySelector("td a"); // Select the last link inside "product#more"
+      if (scrollNode && scrollNode.style.display !== "none") {
+        const scrollURL = scrollLink?.getAttribute("href");
+
+        if (scrollURL) {
+          fetch(scrollURL, { method: "GET" })
+            .then((response) => response.text())
+            .then((data) => {
+              // Remove loading feedback
+              const loadingNode = scrollNode.nextElementSibling;
+              if (loadingNode) loadingNode.remove();
+
+              const parser = new DOMParser();
+              const htmlDocument = parser.parseFromString(data, "text/html");
+              const filteredData = htmlDocument.querySelectorAll(".variant");
+              const productListFoot = this.querySelector("#product-list-foot");
+
+              filteredData.forEach((product) => {
+                if (productListFoot) {
+                  productListFoot.parentNode.insertBefore(
+                    product,
+                    productListFoot
+                  );
+                }
+              });
+
+              // check if any more pages left
+              const nextPage = parseInt(scrollNode.dataset.nextPage);
+              const totalPages = parseInt(scrollNode.dataset.totalPages);
+              // create new link to insert before footer
+              if (productListFoot && nextPage <= totalPages) {
+                const more = this.createMoreLink(nextPage, totalPages);
+                productListFoot.parentNode.insertBefore(more, productListFoot);
+              }
+            })
+            .catch((error) => console.error("Error fetching data:", error))
+            .finally(() => {
+              this.quantities = this.querySelectorAll(".quantity__input");
+            });
+
+          // Add loading feedback before hiding the node
+          const loadingElement = document.createElement("div");
+          loadingElement.innerHTML = `<img src="{{ "loading.gif" | asset_url }}" />`;
+          scrollNode.parentNode.insertBefore(
+            loadingElement,
+            scrollNode.nextSibling
+          );
+          scrollNode.classList.remove("current");
+        }
+      }
+    }
+  }
+  createMoreLink(nextPage, totalPages) {
+    // Create the <tr> element
+    const tr = document.createElement("tr");
+    tr.classList.add("bulk-order-form-more", "current", "hidden");
+    tr.dataset.nextPage = nextPage + 1;
+    tr.dataset.totalPages = totalPages;
+
+    // Create the <td> element
+    const td = document.createElement("td");
+
+    // Create the arrow text
+    const arrowText = document.createTextNode("↓ ");
+
+    // Create the <a> element
+    const anchor = document.createElement("a");
+    anchor.href = `${this.pageUrl}?page=${nextPage + 1}`; // Set the href attribute
+    anchor.textContent = "More"; // Set the text content
+
+    // Append elements in order
+    td.appendChild(arrowText);
+    td.appendChild(anchor);
+    tr.appendChild(td);
+
+    return tr;
   }
 }
 customElements.define("bulk-order-form", BulkOrderForm);
