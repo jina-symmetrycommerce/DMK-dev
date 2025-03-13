@@ -10,6 +10,9 @@
 {% endcomment %}
 <script src="{{ 'bulk-order-form.js' | asset_url }}" defer="defer"></script>
 <bulk-order-form>
+  <div class="bulk-order-form__error-message-wrapper" role="alert" hidden>
+    <span class="bulk-order-form__error-message"></span>
+  </div>
   <div class="bulk-order-container page-width">
     <form id="bulk-order-filter" class="bulk-order-filter">
       <fieldset class="collections-container">
@@ -95,7 +98,7 @@
         {% endfor %}
       </table>
     </form>
-    <div class="add-to-cart-container page-width">
+    <div class="add-to-cart-container">
       <button
         id="bulk-order-form__submit"
         type="submit"
@@ -112,6 +115,7 @@
 {% style %}
   .bulk-order-container {
     width: 100%;
+    padding-bottom: 2rem;
   }
   .bulk-order-filter {
     background-color: rgb(var(--color-button-background));
@@ -176,8 +180,29 @@
     height: 100%;
     background-color: rgb(var(--color-background));
   }
-  .bulk-order-form__submit {
+  .bulk-order-form {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  .bulk-order-form__error-message-wrapper[hidden] {
+    top: -100%;
+    transform: translateY(-100%);
+    position: fixed;
+  }
+  .bulk-order-form__error-message-wrapper:not([hidden]) {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    top: 0;
+    transform: translateY(0);
+    background-color: var(--color-critical);
     z-index: 200;
+    transition: all 0.3s ease;
+  }
+
+  .bulk-order-form__error-message {
+    color: rgb(var(--color-background));
   }
 {% endstyle %}
 
