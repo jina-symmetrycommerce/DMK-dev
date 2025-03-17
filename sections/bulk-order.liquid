@@ -1,5 +1,5 @@
 <script src="{{ 'bulk-order-form.js' | asset_url }}" defer="defer"></script>
-<bulk-order-form data-page-url="{{ page.url }}">
+<bulk-order-form data-page-url="{{ collection.url }}?view=bulk-order">
   <div class="bulk-order-form__error-message-wrapper" role="alert" hidden>
     <span class="bulk-order-form__error-message"></span>
   </div>
@@ -8,23 +8,24 @@
       <fieldset class="collections-container">
         <label for="collections">Collections: </label>
         <select name="collections" id="collections">
+          <option value="all">All</option>
           {% for collection in collections %}
             <option value="{{ collection.handle }}">{{ collection.title }}</option>
           {% endfor %}
         </select>
       </fieldset>
-      <div class="search-container">
+      <fieldset class="search-container">
         <select name="search-by" id="search-by">
           <option value="title">Title</option>
           <option value="sku">SKU</option>
           <option value="tag">Tag</option>
         </select>
         <input type="text" id="search" name="search" placeholder="Search">
-      </div>
+      </fieldset>
     </form>
     <form id="bulk-order-form" class="bulk-order-form">
       <table class="bulk-order-body">
-        {% paginate collections.all.products by 25 %}
+        {% paginate collections.all.products by 2 %}
           {% for product in collections.all.products %}
             {% for variant in product.variants %}
               <tr
@@ -96,7 +97,7 @@
               data-next-page="{{ paginate.current_page | plus: 1 }}"
               data-total-pages="{{paginate.pages }}"
             >
-              <td>&darr; <a href="{{ paginate.next.url }}">More</a></td>
+              <td><a href="{{ paginate.next.url }}">More</a></td>
             </tr>
           {% endif %}
           <tr class="hidden" id="product-list-foot"></tr>
@@ -133,7 +134,8 @@
   .bulk-order-filter select {
     font-family: var(--font-body-family);
   }
-  .bulk-order-container .collections-container {
+  .bulk-order-container .collections-container,
+  .bulk-order-container .search-container {
     border: none;
     padding: 0;
     margin: 0;
@@ -167,7 +169,7 @@
     padding-bottom: 1rem;
     display: block;
     text-align: end;
-    z-index: 100;
+    z-index: 3;
     position: sticky;
     bottom: 0;
     left: 0;
@@ -222,7 +224,7 @@
     }
   ],
   "enabled_on": {
-    "templates": ["page"]
+    "templates": ["collection"]
   }
 }
 {% endschema %}
