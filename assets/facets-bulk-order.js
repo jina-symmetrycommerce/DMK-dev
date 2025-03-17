@@ -50,7 +50,7 @@ class FacetFiltersForm extends HTMLElement {
     }
 
     sections.forEach((section) => {
-      const url = `${window.location.pathname}?view=bulk-order&section_id=${section.section}&${searchParams}`;
+      const url = `${window.location.pathname}?section_id=${section.section}&${searchParams}`;
       const filterDataUrl = (element) => element.url === url;
 
       FacetFiltersForm.filterData.some(filterDataUrl)
@@ -243,9 +243,7 @@ class FacetFiltersForm extends HTMLElement {
     history.pushState(
       { searchParams },
       "",
-      `${window.location.pathname}${
-        searchParams && "?".concat(searchParams)
-      }&view=bulk-order`
+      `${window.location.pathname}${searchParams && "?".concat(searchParams)}`
     );
   }
 

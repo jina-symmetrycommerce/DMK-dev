@@ -203,9 +203,9 @@ class BulkOrderForm extends HTMLElement {
     const td = document.createElement("td");
 
     const anchor = document.createElement("a");
-    anchor.href = `${window.location.pathname}?view=bulk-order&page=${
-      nextPage + 1
-    }&${window.location.search}`;
+    anchor.href = `${window.location.pathname}?&page=${nextPage + 1}${
+      window.location.search && "&".concat(window.location.search)
+    }`;
     anchor.textContent = "More";
 
     td.appendChild(anchor);
