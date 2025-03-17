@@ -59,8 +59,9 @@ class FacetFiltersForm extends HTMLElement {
     });
 
     if (updateURLHash) FacetFiltersForm.updateURLHash(searchParams);
-
-    document.dispatchEvent(new CustomEvent("collection:reloaded"));
+    setTimeout(() => {
+      document.dispatchEvent(new CustomEvent("collection:reloaded"));
+    }, 0);
   }
 
   static renderSectionFromFetch(url, event) {
@@ -89,9 +90,9 @@ class FacetFiltersForm extends HTMLElement {
   }
 
   static renderProductGridContainer(html) {
-    document.getElementById("bulk-order-form").innerHTML = new DOMParser()
+    document.getElementById("bulk-order-quantities").innerHTML = new DOMParser()
       .parseFromString(html, "text/html")
-      .getElementById("bulk-order-form").innerHTML;
+      .getElementById("bulk-order-quantities").innerHTML;
 
     const layoutSwitcher = document.querySelector(
       "#FacetSortFiltersForm layout-switcher"
@@ -250,7 +251,7 @@ class FacetFiltersForm extends HTMLElement {
   static getSections() {
     return [
       {
-        section: document.getElementById("bulk-order-form").dataset.id,
+        section: document.getElementById("bulk-order-quantities").dataset.id,
       },
     ];
   }

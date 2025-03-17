@@ -4,6 +4,7 @@ class BulkOrderForm extends HTMLElement {
     this.setup();
   }
   setup() {
+    console.log("setup");
     this.form = this.querySelector("#bulk-order-quantities");
     this.filter = this.querySelector("#bulk-order-filter");
     this.search = this.querySelector("#search");
@@ -12,9 +13,12 @@ class BulkOrderForm extends HTMLElement {
     this.addToCartButton = this.querySelector("#bulk-order-form__submit");
     this.cart = document.querySelector("mini-cart");
     this.hideErrors = this.dataset.hideErrors === "true";
-    this.pageUrl = this.dataset.pageUrl;
 
-    this.addEventListener("collection:reloaded", this.setup.bind(this));
+    // this.addEventListener("collection:reloaded", () => {
+    //   setTimeout(() => {
+    //     this.setup.bind(this);
+    //   }, 0);
+    // });
     this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
     // this.search.addEventListener("input", this.onSearchInput.bind(this));
     // this.searchBy.addEventListener("input", this.onSearchInput.bind(this));
@@ -29,6 +33,7 @@ class BulkOrderForm extends HTMLElement {
   }
   onSubmitHandler(evt) {
     evt.preventDefault();
+    console.log("submit");
     if (this.addToCartButton.getAttribute("aria-disabled") === "true") return;
 
     this.handleErrorMessage();
@@ -203,9 +208,12 @@ class BulkOrderForm extends HTMLElement {
     const td = document.createElement("td");
 
     const anchor = document.createElement("a");
-    anchor.href = `${window.location.pathname}?&page=${nextPage + 1}${
-      window.location.search && "&".concat(window.location.search)
+    anchor.href = `${window.location.pathname}?page=${nextPage + 1}${
+      window.location.search &&
+      "&".concat(window.location.search.replace("?", ""))
     }`;
+    console.log(anchor.href);
+    console.log(window.location.search);
     anchor.textContent = "More";
 
     td.appendChild(anchor);
