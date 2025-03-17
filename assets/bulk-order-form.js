@@ -14,12 +14,14 @@ class BulkOrderForm extends HTMLElement {
     this.cart = document.querySelector("mini-cart");
     this.hideErrors = this.dataset.hideErrors === "true";
 
-    // this.addEventListener("collection:reloaded", () => {
-    //   setTimeout(() => {
-    //     this.setup.bind(this);
-    //   }, 0);
-    // });
+    // this.addEventListener("collection:reloaded", this.setup.bind(this));
+    document.addEventListener("collection:reloaded", () => {
+      this.quantities = document.querySelectorAll(".quantity__input");
+    });
     this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
+    this.form.addEventListener("submit", () => {
+      console.log("submit123");
+    });
     // this.search.addEventListener("input", this.onSearchInput.bind(this));
     // this.searchBy.addEventListener("input", this.onSearchInput.bind(this));
 
@@ -40,6 +42,7 @@ class BulkOrderForm extends HTMLElement {
 
     // process all items to add
     const items = [];
+    console.log(this.quantities.length);
     this.quantities.forEach((quantity) => {
       if (quantity.value > 0) {
         items.push({
@@ -212,8 +215,6 @@ class BulkOrderForm extends HTMLElement {
       window.location.search &&
       "&".concat(window.location.search.replace("?", ""))
     }`;
-    console.log(anchor.href);
-    console.log(window.location.search);
     anchor.textContent = "More";
 
     td.appendChild(anchor);

@@ -104,8 +104,8 @@
             </fieldset>
           </form>
         {% endcomment %}
-        <form id="bulk-order-quantities" class="bulk-order-quantities">
-          <table class="bulk-order-body">
+        <form id="bulk-order-quantities" class="bulk-order-quantities" data-id="{{ section.id }}">
+          <table class="bulk-order-body" id="bulk-order-body" data-id="{{ section.id }}">
             {% paginate collection.products by 2 %}
               {% for product in collection.products %}
                 {% for variant in product.variants %}
