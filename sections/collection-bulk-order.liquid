@@ -15,26 +15,15 @@
   if collection.all_products_count > 5000
     assign enable_filtering = false
   endif
-
-  assign blocks_count = section.blocks.size
 -%}
-
-{%- style -%}
-  #shopify-section-{{ section.id }} {
-    --section-padding-top: {{ section.settings.padding_top }}px;
-    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --image-position: {{ section.settings.image_position }};
-  }
-{%- endstyle -%}
 
 {{ 'template-collection.css' | asset_url | stylesheet_tag }}
 {{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-product-grid.css' | asset_url | stylesheet_tag }}
 
 <link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
-
+<link rel="stylesheet" href="{{ 'bulk-order.css' | asset_url }}" media="print" onload="this.media='all'">
+<script src="{{ 'bulk-order-form.js' | asset_url }}" defer="defer"></script>
 {%- if settings.quick_view_enabled and section.settings.enable_quick_view -%}
   <link rel="stylesheet" href="{{ 'section-main-product.css' | asset_url }}" media="print" onload="this.media='all'">
   <link
@@ -57,7 +46,6 @@
   >
   <script src="{{ 'infinite-scroll.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
-<script src="{{ 'bulk-order-form.js' | asset_url }}" defer="defer"></script>
 
 <div class="section--padding">
   {%- if enable_filtering or enable_sorting or enable_viewing -%}
@@ -83,30 +71,9 @@
         <span class="bulk-order-form__error-message"></span>
       </div>
       <div class="bulk-order-container">
-        {% comment %}
-          <form id="bulk-order-filter" class="bulk-order-filter page-width">
-            <fieldset class="collections-container">
-              <label for="collections">Collections: </label>
-              <select name="collections" id="collections">
-                <option value="all">All</option>
-                {% for collection in collections %}
-                  <option value="{{ collection.handle }}">{{ collection.title }}</option>
-                {% endfor %}
-              </select>
-            </fieldset>
-            <fieldset class="search-container">
-              <select name="search-by" id="search-by">
-                <option value="title">Title</option>
-                <option value="sku">SKU</option>
-                <option value="tag">Tag</option>
-              </select>
-              <input type="text" id="search" name="search" placeholder="Search">
-            </fieldset>
-          </form>
-        {% endcomment %}
         <form id="bulk-order-quantities" class="bulk-order-quantities" data-id="{{ section.id }}">
           <table class="bulk-order-body" id="bulk-order-body" data-id="{{ section.id }}">
-            {% paginate collection.products by 2 %}
+            {% paginate collection.products by 10 %}
               {% for product in collection.products %}
                 {% for variant in product.variants %}
                   <tr
@@ -200,115 +167,9 @@
   </div>
 </div>
 
-{% style %}
-  .bulk-order-container {
-    width: 100%;
-    padding-bottom: 2rem;
-  }
-  .bulk-order-filter {
-    background-color: rgb(var(--color-button-background));
-    color: rgb(var(--color-button-text));
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-  .bulk-order-filter select {
-    font-family: var(--font-body-family);
-  }
-  .bulk-order-container .collections-container,
-  .bulk-order-container .search-container {
-    border: none;
-    padding: 0;
-    margin: 0;
-  }
-  .bulk-order-body {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .bulk-order-body tr {
-    border-bottom: 2px solid rgb(var(--color-border));
-    border-top: 2px solid rgb(var(--color-border));
-    height: 100px;
-    padding: 0 5rem;
-  }
-  .bulk-order-body td {
-    padding: 0 1rem;
-  }
-  .bulk-order-body td:first-child {
-    padding-left: 5rem;
-    padding-right: 1rem;
-  }
-  .bulk-order-body td:last-child {
-    padding-left: 1rem;
-    padding-right: 5rem;
-  }
-  .bulk-order-body .quantity {
-    width: 10rem;
-    border: 0.1rem solid rgba(var(--color-border), 0.6);
-    padding: 0.2rem 0;
-    border-radius: min(var(--button-radius), 0.2rem);
-  }
-  .bulk-order-body .quantity__button {
-    flex: 0 0 2rem;
-    width: 2rem;
-    height: 2rem;
-    background-color: transparent;
-  }
-
-  .bulk-order-container .add-to-cart-container {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    display: block;
-    text-align: end;
-    z-index: 3;
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    transition: transform var(--duration-default) ease, opacity var(--duration-default) ease;
-    transition-delay: var(--duration-default);
-  }
-  .bulk-order-container .add-to-cart-container::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(var(--color-background));
-  }
-  .bulk-order-quantities {
-    position: relative;
-    margin: 1.5rem 0;
-  }
-  .bulk-order-form__error-message-wrapper[hidden] {
-    top: -100%;
-    transform: translateY(-100%);
-    position: fixed;
-  }
-  .bulk-order-form__error-message-wrapper:not([hidden]) {
-    position: fixed;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    top: 0;
-    transform: translateY(0);
-    background-color: var(--color-critical);
-    z-index: 200;
-    transition: all 0.3s ease;
-  }
-
-  .bulk-order-form__error-message {
-    color: rgb(var(--color-background));
-  }
-{% endstyle %}
-
 {% schema %}
 {
-  "name": "t:sections.main-collection-product-grid.name",
+  "name": "Bulk Order Form",
   "tag": "section",
   "class": "section collection-grid-section",
   "settings": [
@@ -407,10 +268,6 @@
         {
           "value": "horizontal",
           "label": "t:sections.main-collection-product-grid.settings.filter_type.options__1.label"
-        },
-        {
-          "value": "vertical",
-          "label": "t:sections.main-collection-product-grid.settings.filter_type.options__2.label"
         },
         {
           "value": "drawer",
@@ -590,69 +447,6 @@
       "unit": "t:sections.all.padding.padding_bottom.unit",
       "label": "t:sections.all.padding.padding_bottom.label",
       "default": 60
-    }
-  ],
-  "blocks": [
-    {
-      "type": "link_list",
-      "name": "t:sections.main-collection-product-grid.blocks.link_list.name",
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "default": "Quick links",
-          "label": "t:sections.main-collection-product-grid.blocks.link_list.settings.heading.label"
-        },
-        {
-          "type": "link_list",
-          "id": "menu",
-          "label": "t:sections.main-collection-product-grid.blocks.link_list.settings.menu.label"
-        }
-      ]
-    },
-    {
-      "type": "text",
-      "name": "t:sections.main-collection-product-grid.blocks.text.name",
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "default": "Heading",
-          "label": "t:sections.main-collection-product-grid.blocks.text.settings.heading.label"
-        },
-        {
-          "type": "richtext",
-          "id": "subtext",
-          "default": "<p>Share information about your brand with your customers.</p>",
-          "label": "t:sections.main-collection-product-grid.blocks.text.settings.subtext.label"
-        }
-      ]
-    },
-    {
-      "type": "image",
-      "name": "t:sections.main-collection-product-grid.blocks.image.name",
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "t:sections.main-collection-product-grid.blocks.image.settings.image.label"
-        },
-        {
-          "type": "range",
-          "id": "image_width",
-          "min": 100,
-          "max": 500,
-          "step": 5,
-          "unit": "t:sections.main-collection-product-grid.blocks.image.settings.image_width.unit",
-          "label": "t:sections.main-collection-product-grid.blocks.image.settings.image_width.label",
-          "default": 300
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "t:sections.main-collection-product-grid.blocks.image.settings.link.label"
-        }
-      ]
     }
   ]
 }

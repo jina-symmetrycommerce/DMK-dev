@@ -31,30 +31,6 @@
         "padding_top": 36,
         "padding_bottom": 60
       }
-    },
-    "recently-viewed": {
-      "type": "recently-viewed-products",
-      "settings": {
-        "show_divider": true,
-        "heading": "Recently viewed",
-        "heading_size": "h1",
-        "heading_alignment": "center",
-        "heading_tag": "h2",
-        "columns_mobile": "1",
-        "swipe_on_mobile": true,
-        "image_ratio": "portrait",
-        "image_position": "center center",
-        "enable_image_fill": true,
-        "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": true,
-        "show_quick_buy": true,
-        "enable_quick_view": true,
-        "enable_color_swatches": true,
-        "enable_countdown": true,
-        "padding_top": 60,
-        "padding_bottom": 72
-      }
     }
   },
   "order": ["main"]

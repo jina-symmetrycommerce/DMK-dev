@@ -1,3 +1,5 @@
+// remove product count?? misleading sometimes
+
 class FacetFiltersForm extends HTMLElement {
   constructor() {
     super();
@@ -10,6 +12,18 @@ class FacetFiltersForm extends HTMLElement {
       "input",
       this.debouncedOnSubmit.bind(this)
     );
+    FacetFiltersForm.fetchSearchBulkOrderBodyId();
+  }
+
+  static fetchSearchBulkOrderBodyId() {
+    fetch(`/search?view=bulk-order`)
+      .then((response) => response.text())
+      .then((responseText) => {
+        const html = responseText;
+        this.searchBulkOrderBodyId = new DOMParser()
+          .parseFromString(html, "text/html")
+          .getElementById("bulk-order-body").dataset.id;
+      });
   }
 
   static setListeners() {
@@ -50,12 +64,27 @@ class FacetFiltersForm extends HTMLElement {
     }
 
     sections.forEach((section) => {
-      const url = `${window.location.pathname}?section_id=${section.section}&${searchParams}`;
+      let url;
+      if (
+        event &&
+        event.target.id == "facets__search-input" &&
+        event.target.value.trim()
+      ) {
+        url = `/search?section_id=${
+          this.searchBulkOrderBodyId
+        }&q=${event.target.value.trim()}&type=product&view=bulk-order`;
+      } else {
+        url = `${window.location.pathname}?section_id=${section.section}&${searchParams}`;
+      }
+      console.log(url);
       const filterDataUrl = (element) => element.url === url;
 
-      FacetFiltersForm.filterData.some(filterDataUrl)
-        ? FacetFiltersForm.renderSectionFromCache(filterDataUrl, event)
-        : FacetFiltersForm.renderSectionFromFetch(url, event);
+      if (FacetFiltersForm.filterData.some(filterDataUrl)) {
+        FacetFiltersForm.renderSectionFromCache(filterDataUrl, event);
+        // } else if (event && event.target.id == "facets__search-input") {
+      } else {
+        FacetFiltersForm.renderSectionFromFetch(url, event);
+      }
     });
 
     if (updateURLHash) FacetFiltersForm.updateURLHash(searchParams);
@@ -73,7 +102,7 @@ class FacetFiltersForm extends HTMLElement {
           { html, url },
         ];
         FacetFiltersForm.renderFilters(html, event);
-        FacetFiltersForm.renderProductGridContainer(html);
+        FacetFiltersForm.renderBulkOrderProducts(html);
         FacetFiltersForm.renderProductCount(html);
       })
       .catch((e) => {
@@ -84,29 +113,24 @@ class FacetFiltersForm extends HTMLElement {
   static renderSectionFromCache(filterDataUrl, event) {
     const html = FacetFiltersForm.filterData.find(filterDataUrl).html;
     FacetFiltersForm.renderFilters(html, event);
-    FacetFiltersForm.renderProductGridContainer(html);
+    FacetFiltersForm.renderBulkOrderProducts(html);
     FacetFiltersForm.renderProductCount(html);
   }
 
-  static renderProductGridContainer(html) {
-    console.log(document.getElementById("bulk-order-body"));
+  static renderBulkOrderProducts(html) {
     document.getElementById("bulk-order-body").innerHTML = new DOMParser()
       .parseFromString(html, "text/html")
       .getElementById("bulk-order-body").innerHTML;
-
-    const layoutSwitcher = document.querySelector(
-      "#FacetSortFiltersForm layout-switcher"
-    );
-    if (layoutSwitcher)
-      layoutSwitcher.onButtonClick(
-        layoutSwitcher.querySelector(".list-view__item--active")
-      );
   }
 
   static renderProductCount(html) {
-    const count = new DOMParser()
-      .parseFromString(html, "text/html")
-      .getElementById("ProductCount").innerHTML;
+    let count;
+    const dom = new DOMParser().parseFromString(html, "text/html");
+    count = dom.getElementById("ProductCount")
+      ? dom
+          .getElementById("ProductCount")
+          .innerHTML.replace("result", "product")
+      : "0 products";
     const container = document.getElementById("ProductCount");
     const containerMobile = document.getElementById("ProductCountMobile");
     const containerDesktop = document.getElementById("ProductCountDesktop");
@@ -125,6 +149,7 @@ class FacetFiltersForm extends HTMLElement {
   }
 
   static renderFilters(html, event) {
+    if (event && event.target.id == "facets__search-input") return;
     const parsedHTML = new DOMParser().parseFromString(html, "text/html");
 
     const facetDetailsElementsFromFetch = parsedHTML.querySelectorAll(
@@ -175,6 +200,7 @@ class FacetFiltersForm extends HTMLElement {
         }
 
         if (elementToRender.parentElement) {
+          console.log(elementToRender.parentElement.id);
           document
             .querySelector(`#${elementToRender.parentElement.id} .js-filter`)
             .before(elementToRender);

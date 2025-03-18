@@ -4,24 +4,15 @@ class BulkOrderForm extends HTMLElement {
     this.setup();
   }
   setup() {
-    console.log("setup");
     this.form = this.querySelector("#bulk-order-quantities");
     this.filter = this.querySelector("#bulk-order-filter");
     this.search = this.querySelector("#search");
     this.searchBy = this.querySelector("#search-by");
-    this.quantities = this.querySelectorAll(".quantity__input");
     this.addToCartButton = this.querySelector("#bulk-order-form__submit");
     this.cart = document.querySelector("mini-cart");
     this.hideErrors = this.dataset.hideErrors === "true";
 
-    // this.addEventListener("collection:reloaded", this.setup.bind(this));
-    document.addEventListener("collection:reloaded", () => {
-      this.quantities = document.querySelectorAll(".quantity__input");
-    });
     this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
-    this.form.addEventListener("submit", () => {
-      console.log("submit123");
-    });
     // this.search.addEventListener("input", this.onSearchInput.bind(this));
     // this.searchBy.addEventListener("input", this.onSearchInput.bind(this));
 
@@ -35,14 +26,15 @@ class BulkOrderForm extends HTMLElement {
   }
   onSubmitHandler(evt) {
     evt.preventDefault();
-    console.log("submit");
+    this.quantities = document.querySelectorAll(
+      "bulk-order-form .quantity__input"
+    );
     if (this.addToCartButton.getAttribute("aria-disabled") === "true") return;
 
     this.handleErrorMessage();
 
     // process all items to add
     const items = [];
-    console.log(this.quantities.length);
     this.quantities.forEach((quantity) => {
       if (quantity.value > 0) {
         items.push({

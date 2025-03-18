@@ -29,10 +29,11 @@
 
 {{ 'template-collection.css' | asset_url | stylesheet_tag }}
 {{ 'template-search.css' | asset_url | stylesheet_tag }}
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-product-grid.css' | asset_url | stylesheet_tag }}
 {{ 'component-search.css' | asset_url | stylesheet_tag }}
+
+<link rel="stylesheet" href="{{ 'bulk-order.css' | asset_url }}" media="print" onload="this.media='all'">
+<script src="{{ 'bulk-order-form.js' | asset_url }}" defer="defer"></script>
 
 {%- if settings.quick_view_enabled and section.settings.enable_quick_view -%}
   <link rel="stylesheet" href="{{ 'section-main-product.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -159,224 +160,128 @@
       {%- endif -%}
     </div>
   </div>
-
-  <div class="template-search__results{% if filter_type == 'vertical' or blocks_count > 0 %} facets-vertical page-width{% endif %}">
+  <div class="section--padding">
     {%- if enable_filtering or enable_sorting or enable_viewing -%}
       {%- if search.performed -%}
         {{ 'component-facets.css' | asset_url | stylesheet_tag }}
-        <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
-
-        {%- liquid
-          if blocks_count == 0 and search.filters.size > 0
-            if filter_type != 'vertical'
-              render 'facets', results: search, filter_type: filter_type, enable_filtering: enable_filtering, enable_filtering_color_swatches: enable_filtering_color_swatches, enable_sorting: enable_sorting, enable_viewing: enable_viewing, enable_sticky_facet: enable_sticky_facet, default_layout: default_layout, filter_max_items: filter_max_items, color_swatches_add_label: color_swatches_add_label
-            else
-              render 'facets-vertical', results: search, filter_type: filter_type, enable_filtering: enable_filtering, enable_filtering_color_swatches: enable_filtering_color_swatches, enable_sorting: enable_sorting, enable_viewing: enable_viewing, enable_sticky_facet: enable_sticky_facet, default_layout: default_layout, filter_max_items: filter_max_items, color_swatches_add_label: color_swatches_add_label
-            endif
-          endif
-        -%}
+        <script src="{{ 'facets-bulk-order.js' | asset_url }}" defer="defer"></script>
       {%- endif -%}
     {%- endif -%}
 
-    {%- liquid
-      if search.performed and blocks_count > 0
-        if filter_type == 'vertical'
-          render 'facets-vertical', results: search, filter_type: filter_type, enable_filtering: enable_filtering, enable_filtering_color_swatches: enable_filtering_color_swatches, enable_sorting: enable_sorting, enable_viewing: enable_viewing, enable_sticky_facet: enable_sticky_facet, blocks: section.blocks, filter_max_items: filter_max_items, color_swatches_add_label: color_swatches_add_label
-        else
-          render 'facets-vertical', results: search, enable_filtering: false, enable_sorting: false, enable_viewing: false, enable_sticky_facet: enable_sticky_facet, blocks: section.blocks, filter_max_items: filter_max_items, color_swatches_add_label: color_swatches_add_label
-        endif
-      endif
-    -%}
-
-    <div class="product-grid-container{% unless filter_type == 'vertical' or blocks_count > 0 %} page-width{% endunless %}">
+    <div class="product-grid-container">
       {%- liquid
         if enable_filtering or enable_sorting or enable_viewing
-          if search.performed and search.results_count > 0
-            if filter_type == 'vertical'
-              render 'facets-vertical-top', results: search, filter_type: filter_type, enable_filtering: enable_filtering, enable_filtering_color_swatches: enable_filtering_color_swatches, enable_sorting: enable_sorting, enable_viewing: enable_viewing, enable_sticky_facet: enable_sticky_facet, default_layout: default_layout, color_swatches_add_label: color_swatches_add_label
-            elsif blocks_count > 0
-              render 'facets', results: search, filter_type: filter_type, enable_filtering: enable_filtering, enable_filtering_color_swatches: enable_filtering_color_swatches, enable_sorting: enable_sorting, enable_viewing: enable_viewing, enable_sticky_facet: enable_sticky_facet, default_layout: default_layout, filter_max_items: filter_max_items, color_swatches_add_label: color_swatches_add_label
-            endif
+          if search.results_count > 0
+            render 'facets-bulk-order', results: search, filter_type: filter_type, enable_filtering: enable_filtering, enable_filtering_color_swatches: enable_filtering_color_swatches, enable_sorting: enable_sorting, enable_viewing: enable_viewing, enable_sticky_facet: enable_sticky_facet, default_layout: default_layout, filter_max_items: filter_max_items, color_swatches_add_label: color_swatches_add_label
           endif
         endif
       -%}
-
-      <div id="ProductGridContainer">
-        {% paginate search.results by products_per_page %}
-          {%- if search.performed -%}
-            {%- if search.results_count == 0 -%}
-              <div class="collection collection--empty" id="product-grid" data-id="{{ section.id }}">
-                <div class="loading-overlay"></div>
-
-                <div class="title-wrapper center">
-                  <p class="title h2 title--primary">
-                    {%- liquid
-                      if search.filters.size > 0
-                        assign sort_by = search.sort_by | default: search.default_sort_by
-                        assign search_url = '?q=' | append: search.terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
-                        echo 'templates.search.empty' | t
-                        echo '<br/>'
-                        echo 'templates.search.use_fewer_filters_html' | t: link: search_url, class: 'link link--underline'
-                      else
-                        echo 'templates.search.no_results' | t: terms: search.terms
-                        echo '<br/>'
-                        echo 'templates.search.check_the_spelling' | t
-                      endif
-                    -%}
-                  </p>
-                </div>
-              </div>
-            {%- else -%}
-              <div class="collection">
-                <div class="loading-overlay"></div>
-                {%- liquid
-                  assign grid_class = 'grid grid--2-col'
-
-                  if section.settings.columns_mobile == '1'
-                    assign grid_class = grid_class | append: ' grid--1-col-mobile'
-                  endif
-
-                  if products_per_row == 3
-                    assign grid_class = grid_class | append: ' grid--3-col-tablet grid--3-col-desktop'
-                  elsif products_per_row == 4
-                    assign grid_class = grid_class | append: ' grid--3-col-tablet grid--4-col-desktop'
-                  endif
-                -%}
-                <ul id="product-grid" data-id="{{ section.id }}" class="product-grid {{ grid_class }}" role="list">
-                  {%- for item in search.results -%}
-                    {%- liquid
-                      assign lazy_load = true
-                      if forloop.first
-                        assign lazy_load = false
-                      endif
-                    -%}
-                    <li class="grid__item">
-                      {%- case item.object_type -%}
-                        {%- when 'product' -%}
-                          {% render 'card-product',
-                            card_product: item,
-                            card_collection: collection,
-                            media_size: section.settings.image_ratio,
-                            show_secondary_image: section.settings.show_secondary_image,
-                            show_quick_buy: section.settings.show_quick_buy,
-                            show_vendor: section.settings.show_vendor,
-                            show_rating: section.settings.show_rating,
-                            enable_quick_view: section.settings.enable_quick_view,
-                            enable_color_swatches: section.settings.enable_color_swatches,
-                            enable_countdown: section.settings.enable_countdown,
-                            enable_image_fill: section.settings.enable_image_fill,
-                            lazy_load: lazy_load
-                          %}
-                        {%- when 'article' -%}
-                          <div class="card-wrapper">
-                            <a href="{{ item.url }}" class="full-unstyled-link">
-                              <span class="visually-hidden">{{ item.title | truncate: 50 | escape }}</span>
-                            </a>
-                            <div
-                              class="card card--product card--search{% if item.image == nil %} card--text{% endif %}"
-                              tabindex="-1"
-                            >
-                              {%- if item.image -%}
-                                {%- liquid
-                                  assign featured_media_aspect_ratio = item.image.aspect_ratio
-
-                                  if item.image.aspect_ratio == null
-                                    assign featured_media_aspect_ratio = 1
-                                  endif
-                                -%}
-                                <use-animate data-animate="zoom-fade-small" class="card__media media-wrapper">
-                                  <a
-                                    href="{{ item.url }}"
-                                    class="image-animate media media--{{ section.settings.image_ratio }} media--hover-effect"
-                                    tabindex="-1"
-                                    {%- if section.settings.image_ratio == 'adapt' %}
-                                      style="--image-ratio-percent: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"
-                                    {% endif -%}
-                                  >
-                                    {%- capture sizes -%}(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 10rem) / 2),{% if section.settings.columns_mobile == '1' %} calc((100vw - 3rem){% else %} calc((100vw - 3rem) / 2){% endif %}{%- endcapture -%}
-                                    {{
-                                      item.image
-                                      | image_url: width: 1100
-                                      | image_tag:
-                                        loading: 'lazy',
-                                        sizes: sizes,
-                                        widths: '165, 360, 535, 750, 940, 1100'
-                                    }}
-                                  </a>
-                                </use-animate>
-                              {%- else -%}
-                                <div class="media media--{{ section.settings.image_ratio }}">
-                                  <div class="card__content">
-                                    <h3 class="card-information__text h3">{{ item.title | truncate: 50 | escape }}</h3>
-                                  </div>
-                                </div>
-                              {%- endif -%}
-
-                              <div class="card__badge">
-                                <div>
-                                  <span class="badge">{{ 'blogs.article.blog' | t }}</span>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="card-information">
-                              <div class="card-information__wrapper">
-                                <div class="card-article-info caption-with-letter-spacing h5 light">
-                                  {%- if section.settings.article_show_date -%}
-                                    <span class="circle-divider">
-                                      {{- item.published_at | time_tag: format: 'month_day_year' -}}
-                                    </span>
-                                  {%- endif -%}
-                                  {%- if section.settings.article_show_author -%}
-                                    <span class="circle-divider">{{ item.author }}</span>
-                                  {%- endif -%}
-                                  {%- if section.settings.article_show_comment_count and item.comments_count > 0 -%}
-                                    <span class="circle-divider">
-                                      {{- 'blogs.article.comments' | t: count: item.comments_count -}}
-                                    </span>
-                                  {%- endif -%}
-                                </div>
-
-                                {%- if item.image -%}
-                                  <a href="{{ item.url }}" class="card-information__text h4">
-                                    {{ item.title | truncate: 50 | escape }}
-                                  </a>
-                                {%- endif -%}
-                              </div>
-                            </div>
+      <bulk-order-form
+        id="bulk-order-form"
+        data-id="{{ section.id }}"
+      >
+        <div class="bulk-order-form__error-message-wrapper" role="alert" hidden>
+          <span class="bulk-order-form__error-message"></span>
+        </div>
+        <div class="bulk-order-container">
+          <form id="bulk-order-quantities" class="bulk-order-quantities" data-id="{{ section.id }}">
+            <table class="bulk-order-body" id="bulk-order-body" data-id="{{ section.id }}">
+              {% paginate search.results by 10 %}
+                {% for item in search.results %}
+                  {% if item.object_type == 'product' %}
+                    {% for variant in item.variants %}
+                      <tr
+                        class="variant page-width"
+                        id="variant-{{ forloop.parentloop.index | plus: paginate.current_offset }}-{{ forloop.index }}"
+                        data-variant-id="{{ variant.id }}"
+                      >
+                        {% if variant.featured_image != blank %}
+                          <td><img src="{{ variant | image_url: height: 100}}"></td>
+                        {% elsif item.featured_image != blank %}
+                          <td><img src="{{ item | image_url: height: 100}}"></td>
+                        {% endif %}
+                        <td>
+                          <div>
+                            {% if variant.title == 'Default Title' %}
+                              {{ item.title }}
+                            {% else %}
+                              {{ variant.title }}
+                            {% endif %}
                           </div>
-                        {%- when 'page' -%}
-                          <a href="{{ item.url }}" class="card-wrapper">
-                            <div class="card card--page card--text">
-                              <div class="card__media">
-                                <div class="media media--{{ section.settings.image_ratio }}"></div>
-                                <div class="card__badge">
-                                  <span class="badge color-background-1">{{ 'templates.search.page' | t }}</span>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="card-information">
-                              <div class="card-information__wrapper">
-                                <h3 class="card-information__text h3">{{ item.title | truncate: 50 | escape }}</h3>
-                              </div>
-                            </div>
-                          </a>
-                      {%- endcase -%}
-                    </li>
-                  {%- endfor -%}
-                </ul>
-
-                {%- if paginate.pages > 1 -%}
-                  {% render 'pagination', paginate: paginate, pagination: section.settings.pagination %}
-                {%- endif -%}
-              </div>
-            {%- endif -%}
-          {%- endif -%}
-        {% endpaginate %}
-      </div>
+                          <div>{{ variant.price | money }}</div>
+                        </td>
+                        {% comment %} <td>SKU: {{ variant.sku }}</td> {% endcomment %}
+                        <td>Stock: {{ variant.inventory_quantity }}</td>
+                        <td>
+                          <label for="Quantity-{{ variant.id }}" class="visually-hidden">
+                            {{- 'products.product.quantity.label' | t -}}
+                          </label>
+                          <quantity-input class="quantity">
+                            <button class="quantity__button no-js-hidden" name="minus" type="button">
+                              <span class="visually-hidden">
+                                {{- 'products.product.quantity.decrease' | t: product: variant.title | escape -}}
+                              </span>
+                              {% render 'icon', icon: 'minus' %}
+                            </button>
+                            <input
+                              class="quantity__input"
+                              type="number"
+                              data-quantity-variant-id="{{ variant.id }}"
+                              name="quantity-{{ variant.id }}"
+                              value="0"
+                              {% # theme-check-disable %}
+                              data-cart-quantity="{{ cart | item_count_for_variant: variant.id }}"
+                              min="0"
+                              data-min="{{ variant.quantity_rule.min }}"
+                              {% if variant.quantity_rule.max != null %}
+                                max="{{ variant.quantity_rule.max }}"
+                              {% endif %}
+                              step="{{ variant.quantity_rule.increment }}"
+                              {% # theme-check-enable %}
+                              aria-label="{{ 'products.product.quantity.input_label' | t: product: variant.title | escape }}"
+                              id="Quantity-{{ variant.id }}"
+                            >
+                            <button class="quantity__button no-js-hidden" name="plus" type="button">
+                              <span class="visually-hidden">
+                                {{- 'products.product.quantity.increase' | t: product: variant.title | escape -}}
+                              </span>
+                              {% render 'icon', icon: 'plus' %}
+                            </button>
+                          </quantity-input>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+                {% if paginate.next %}
+                  <tr
+                    class="bulk-order-form-more current hidden"
+                    data-next-page="{{ paginate.current_page | plus: 1 }}"
+                    data-total-pages="{{paginate.pages }}"
+                  >
+                    <td><a href="{{ paginate.next.url }}">More</a></td>
+                  </tr>
+                {% endif %}
+                <tr class="hidden" id="product-list-foot"></tr>
+              {% endpaginate %}
+            </table>
+          </form>
+          <div class="add-to-cart-container">
+            <button
+              id="bulk-order-form__submit"
+              type="submit"
+              name="bulkorderadd"
+              form="bulk-order-quantities"
+              class="bulk-order-form__submit button button--small"
+            >
+              Add all to cart
+            </button>
+          </div>
+        </div>
+      </bulk-order-form>
     </div>
   </div>
 </div>
-
 {% schema %}
 {
   "name": "t:sections.main-search.name",

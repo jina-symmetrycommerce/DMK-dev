@@ -5,13 +5,15 @@
     z-index: 101;
   }
 
-  .facet-drawer--open announcement-bar[data-compact=false].marquee .announcement-slider {
+  .facet-drawer--open
+    announcement-bar[data-compact="false"].marquee
+    .announcement-slider {
     animation-play-state: paused;
   }
 
   .no-js facet-drawer .disclosure-has-popup[open] > summary::before {
     height: 100vh;
-    cursor: url(cross.svg),url(cross.png),zoom-out;
+    cursor: url(cross.svg), url(cross.png), zoom-out;
     background-color: rgba(var(--color-overlay), 0.5);
   }
 }
@@ -202,7 +204,7 @@
     border-radius: 1.6rem;
     background-color: rgba(var(--color-border), 0.3);
   }
-  
+
   .facet-filters__sort .facets__display::-webkit-scrollbar-thumb {
     border-radius: 1.6rem;
     background-color: rgb(var(--color-border));
@@ -416,7 +418,7 @@ facet-drawer .facets__display {
 }
 
 .facets__item label:not(.facet-checkbox--disabled),
-.facets__item input[type=checkbox] {
+.facets__item input[type="checkbox"] {
   cursor: pointer;
 }
 
@@ -433,7 +435,7 @@ facet-drawer .facets__display {
   white-space: nowrap;
 }
 
-.facet-checkbox input[type=checkbox] {
+.facet-checkbox input[type="checkbox"] {
   clip: rect(0, 0, 0, 0);
   overflow: hidden;
   position: absolute;
@@ -452,7 +454,7 @@ facet-drawer .facets__display {
 }
 
 .facet-checkbox .icon::after {
-  content: '';
+  content: "";
   width: 0.6rem;
   height: 0.6rem;
   position: absolute;
@@ -465,7 +467,7 @@ facet-drawer .facets__display {
   transition: opacity var(--duration-short) ease;
 }
 
-.facet-checkbox > input[type=checkbox]:checked ~ .icon::after {
+.facet-checkbox > input[type="checkbox"]:checked ~ .icon::after {
   opacity: 1;
 }
 
@@ -481,7 +483,7 @@ facet-drawer .facets__display {
 }
 
 .facet-checkbox .label::before {
-  content: '';
+  content: "";
   height: 0.1rem;
   width: 0;
   display: block;
@@ -491,7 +493,7 @@ facet-drawer .facets__display {
 }
 
 .facet-checkbox .label::after {
-  content: '';
+  content: "";
   position: absolute;
   height: 0.1rem;
   background-color: currentColor;
@@ -502,16 +504,16 @@ facet-drawer .facets__display {
   transition: width var(--duration-default) ease;
 }
 
-.facet-checkbox input[type=radio]:checked ~ .label {
+.facet-checkbox input[type="radio"]:checked ~ .label {
   cursor: default;
   color: rgba(var(--color-foreground), 0.55);
 }
 
-.facet-checkbox input[type=radio]:checked ~ .label::before {
+.facet-checkbox input[type="radio"]:checked ~ .label::before {
   width: 1rem;
 }
 
-.facet-checkbox input[type=radio]:checked ~ .label::after {
+.facet-checkbox input[type="radio"]:checked ~ .label::after {
   width: 0;
   right: 0;
   left: auto;
@@ -598,7 +600,7 @@ button.facets__button {
   flex-wrap: wrap;
   white-space: nowrap;
   overflow-x: auto;
-  margin-inline-start: -2rem;;
+  margin-inline-start: -2rem;
 }
 
 a.active-facets__button {
@@ -620,7 +622,7 @@ a.active-facets__button--dark {
 }
 
 a.active-facets__button--dark::after {
-  content: '';
+  content: "";
   border-left: 0.1rem solid currentColor;
   height: 100%;
   margin-inline-start: 2rem;
@@ -632,7 +634,7 @@ a.active-facets__button--dark::after {
 .active-facets__button .icon {
   width: 1rem;
   height: 1rem;
-  margin-inline-end: .6rem;
+  margin-inline-end: 0.6rem;
   pointer-events: none;
   transition: transform var(--duration-default) ease;
 }
@@ -680,7 +682,7 @@ a.active-facets__button--dark::after {
 }
 
 .count-bubble--dot::before {
-  content: '';
+  content: "";
   width: 0.2rem;
   height: 0.2rem;
   display: block;
@@ -718,7 +720,7 @@ a.active-facets__button--dark::after {
 
 .no-js .mobile-facets__wrapper .disclosure-has-popup[open] > summary::before {
   height: 100vh;
-  cursor: url(cross.svg),url(cross.png),zoom-out;
+  cursor: url(cross.svg), url(cross.png), zoom-out;
   background-color: rgba(var(--color-overlay), 0.5);
 }
 
@@ -799,7 +801,7 @@ a.active-facets__button--dark::after {
 }
 
 .mobile-facets__close::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 3.4rem;
   height: 3.4rem;
@@ -865,7 +867,7 @@ a.active-facets__button--dark::after {
 }
 
 .mobile-facets__close-button span::before {
-  content: '';
+  content: "";
   height: 2rem;
   border-inline-start: 0.1rem solid rgb(var(--color-border));
   padding-inline-end: 1.5rem;
@@ -1011,7 +1013,7 @@ input.mobile-facets__checkbox {
 }
 
 .mobile-facets__label .icon::after {
-  content: '';
+  content: "";
   width: 0.6rem;
   height: 0.6rem;
   position: absolute;
@@ -1026,7 +1028,7 @@ input.mobile-facets__checkbox {
   transition-duration: var(--duration-short);
 }
 
-.mobile-facets__label > input[type=checkbox]:checked ~ .icon::after {
+.mobile-facets__label > input[type="checkbox"]:checked ~ .icon::after {
   visibility: visible;
   opacity: 1;
 }
@@ -1103,7 +1105,7 @@ facet-drawer.loading > details[open] > summary .button {
 }
 
 facet-drawer.loading > details[open] > summary::after {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   z-index: 1;
@@ -1112,7 +1114,7 @@ facet-drawer.loading > details[open] > summary::after {
   margin-top: -1rem;
   margin-left: -1rem;
   animation: loading var(--duration-long) infinite linear;
-  border: .2rem solid transparent;
+  border: 0.2rem solid transparent;
   border-inline-start: 0.2rem solid rgb(var(--color-button-text));
   border-radius: 100%;
   height: 2rem;
@@ -1212,7 +1214,11 @@ facet-drawer.loading > details[open] > summary::after {
 }
 
 .price-range__track {
-  --gradient-colors: var(--unselected-range) 0%, var(--unselected-range) var(--progress-lower), var(--selected-range) var(--progress-lower), var(--selected-range) var(--progress-upper), var(--unselected-range) var(--progress-upper), var(--unselected-range) 100%;
+  --gradient-colors: var(--unselected-range) 0%,
+    var(--unselected-range) var(--progress-lower),
+    var(--selected-range) var(--progress-lower),
+    var(--selected-range) var(--progress-upper),
+    var(--unselected-range) var(--progress-upper), var(--unselected-range) 100%;
   background-image: linear-gradient(90deg, var(--gradient-colors));
   position: absolute;
   z-index: 1;
@@ -1228,7 +1234,13 @@ facet-drawer.loading > details[open] > summary::after {
   position: absolute;
   height: 0.2rem;
   width: 100%;
-  background-image: linear-gradient(90deg, rgb(var(--color-border)), rgb(var(--color-border)) 50%, transparent 0, transparent);
+  background-image: linear-gradient(
+    90deg,
+    rgb(var(--color-border)),
+    rgb(var(--color-border)) 50%,
+    transparent 0,
+    transparent
+  );
   background-size: 0.4rem 0.4rem;
   border-radius: 0.4rem;
   border-right: 0.4rem rgb(var(--color-border)) solid;
@@ -1262,7 +1274,7 @@ facet-drawer.loading > details[open] > summary::after {
 }
 
 .price-range__thumbs::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -1278,7 +1290,7 @@ facet-drawer.loading > details[open] > summary::after {
 }
 
 .price-range__thumbs::after {
-  content: '';
+  content: "";
   position: absolute;
   z-index: 1;
   top: -0.1rem;
@@ -1441,7 +1453,8 @@ facet-drawer.loading > details[open] > summary::after {
 }
 
 @keyframes beat {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -1449,7 +1462,9 @@ facet-drawer.loading > details[open] > summary::after {
   }
 }
 
-.product-grid-container .facet-filters > .page-width {
+.product-grid-container:not(:has(.facets__search))
+  .facet-filters
+  > .page-width {
   padding-inline-start: 0;
   padding-inline-end: 0;
 }
@@ -1467,12 +1482,12 @@ facet-drawer.loading > details[open] > summary::after {
   [data-button-round] .facets-container-drawer {
     column-gap: 2rem;
   }
-  
+
   .facets-container-drawer .facets {
     flex: 1 1 auto;
     z-index: 2;
   }
-  
+
   .facets-container-drawer .mobile-facets__wrapper {
     flex: 0 0 auto;
     margin-bottom: 0;
@@ -1500,15 +1515,21 @@ facet-drawer.loading > details[open] > summary::after {
     width: 100%;
   }
 
-  .facet-filters .js-filter[aria-expanded=false] .facets__item--alt {
+  .facet-filters .js-filter[aria-expanded="false"] .facets__item--alt {
     display: none;
   }
 
-  .facet-filters .js-filter[aria-expanded=false] .facets__list--swatch .facets__item--alt {
+  .facet-filters
+    .js-filter[aria-expanded="false"]
+    .facets__list--swatch
+    .facets__item--alt {
     display: block;
   }
 
-  .facet-filters .js-filter[aria-expanded=false] .facets__list--swatch-label .facets__item--alt {
+  .facet-filters
+    .js-filter[aria-expanded="false"]
+    .facets__list--swatch-label
+    .facets__item--alt {
     display: none;
   }
 
@@ -1577,7 +1598,7 @@ facet-drawer.loading > details[open] > summary::after {
     border-radius: 1.6rem;
     background-color: transparent;
   }
-  
+
   .facets-vertical > .facet-filters::-webkit-scrollbar-thumb {
     border: 0.3rem solid transparent;
     background-clip: padding-box;
@@ -1615,7 +1636,11 @@ facet-drawer.loading > details[open] > summary::after {
     margin-bottom: 0;
   }
 
-  .facets-vertical > .facet-filters .facets__main > details:first-child .facets__header {
+  .facets-vertical
+    > .facet-filters
+    .facets__main
+    > details:first-child
+    .facets__header {
     border-top: 0;
   }
 
@@ -1715,7 +1740,7 @@ facet-drawer.loading > details[open] > summary::after {
 
 .facets__list--swatch .color__swatch::before,
 .facets__list--swatch .color__swatch::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -1844,4 +1869,27 @@ facet-drawer.loading > details[open] > summary::after {
     font-size: calc(var(--font-heading-scale) * 1.3rem);
     line-height: calc(var(--font-heading-scale) * 1.3rem);
   }
+}
+
+.facets__search {
+  margin-left: auto;
+  width: 20em;
+}
+
+.facets__search-input {
+  flex: 0 0 auto;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(var(--color-foreground), 0.06);
+  /* border-radius: 1rem; */
+  column-gap: 1.5rem;
+  padding: 0 1.5rem;
+  border: 0;
+  min-width: auto;
+}
+
+.facets__search-input:focus-visible {
+  outline: 0;
+  outline-offset: 0;
+  box-shadow: none;
 }
