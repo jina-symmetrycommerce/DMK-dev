@@ -3,7 +3,18 @@
   "blog": [],
   "brand": [],
   "collection": [],
-  "company": [],
+  "company": [
+    {
+      "key": "unregistered_customer_emails",
+      "namespace": "custom",
+      "name": "Unregistered Customer Emails",
+      "description": "ensure this metafeidl accepts valid email addresses",
+      "type": {
+        "name": "list.single_line_text_field",
+        "category": "TEXT"
+      }
+    }
+  ],
   "company_location": [],
   "location": [],
   "market": [],

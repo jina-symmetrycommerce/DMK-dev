@@ -34,10 +34,6 @@ class FacetFiltersForm extends HTMLElement {
     const countContainerDesktop = document.getElementById(
       "ProductCountDesktop"
     );
-    // document
-    //   .getElementById("ProductGridContainer")
-    //   .querySelector(".collection")
-    //   .classList.add("loading");
     if (countContainer) {
       countContainer.classList.add("loading");
     }
@@ -266,7 +262,7 @@ class FacetFiltersForm extends HTMLElement {
 
   onSubmitHandler(event) {
     event.preventDefault();
-
+    FacetSearch.renderPage("", null, false);
     const currentForm = event.target.closest("form");
     if (currentForm.id === "FacetFiltersFormMobile") {
       const searchParams = this.createSearchParams(currentForm);
@@ -314,12 +310,12 @@ FacetFiltersForm.setListeners();
 class FacetSearch extends HTMLElement {
   constructor() {
     super();
-    this.searchInput = this.querySelector("#facets__search-input");
+    FacetSearch.searchInput = this.querySelector("#facets__search-input");
     FacetSearch.fetchSearchBulkOrderBodyId();
     this.debouncedOnSubmit = debounce((event) => {
       this.onSubmitHandler(event);
     }, 500);
-    this.searchInput.addEventListener(
+    FacetSearch.searchInput.addEventListener(
       "input",
       this.debouncedOnSubmit.bind(this)
     );
@@ -337,7 +333,7 @@ class FacetSearch extends HTMLElement {
   }
 
   static updateInputValue(value) {
-    this.searchInput.value = value;
+    FacetSearch.searchInput.value = value;
   }
 
   static setListeners() {
@@ -372,28 +368,19 @@ class FacetSearch extends HTMLElement {
     if (facetDrawer) {
       facetDrawer.classList.add("loading");
     }
-
     let url = "";
     if (searchParamsObj.get("facets__search-input")) {
-      url = `/search?section_id=${
-        this.searchBulkOrderBodyId
-      }&q=${searchParamsObj.get(
-        "facets__search-input"
-      )}&type=product&view=bulk-order`;
+      const query = searchParamsObj.get("facets__search-input");
+      url = `/search?section_id=${this.searchBulkOrderBodyId}&q=${query}&type=product&view=bulk-order`;
+      FacetSearch.updateInputValue(query);
+    } else {
+      FacetSearch.updateInputValue("");
     }
-
-    this.updateInputValue(
-      searchParamsObj.get("facets__search-input")
-        ? searchParamsObj.get("facets__search-input")
-        : ""
-    );
     const filterDataUrl = (element) => element.url === url;
     filterData.some(filterDataUrl)
       ? FacetSearch.renderSectionFromCache(filterDataUrl, event)
       : FacetSearch.renderSectionFromFetch(url, event);
-
     if (updateURLHash) FacetSearch.updateURLHash(searchParams);
-
     document.dispatchEvent(new CustomEvent("collection:reloaded"));
   }
 
@@ -463,9 +450,9 @@ class FacetSearch extends HTMLElement {
   }
 
   createSearchParams() {
-    this.searchInput.value = this.searchInput.value.trim();
+    FacetSearch.searchInput.value = FacetSearch.searchInput.value.trim();
     return new URLSearchParams(
-      `${this.searchInput.name}=${this.searchInput.value}`
+      `${FacetSearch.searchInput.name}=${FacetSearch.searchInput.value}`
     );
   }
 
@@ -475,8 +462,7 @@ class FacetSearch extends HTMLElement {
 
   onSubmitHandler(event) {
     event.preventDefault();
-    FacetFiltersForm.renderPage("", event);
-    console.log("hehehe");
+    FacetFiltersForm.renderPage("", null, false);
     const searchParams = this.createSearchParams();
     this.onSubmitForm(searchParams.toString(), event);
   }
