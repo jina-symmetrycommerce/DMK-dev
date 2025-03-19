@@ -1,4 +1,4 @@
-// remove product count?? misleading sometimes
+let filterData = [];
 
 class FacetFiltersForm extends HTMLElement {
   constructor() {
@@ -12,18 +12,6 @@ class FacetFiltersForm extends HTMLElement {
       "input",
       this.debouncedOnSubmit.bind(this)
     );
-    FacetFiltersForm.fetchSearchBulkOrderBodyId();
-  }
-
-  static fetchSearchBulkOrderBodyId() {
-    fetch(`/search?view=bulk-order`)
-      .then((response) => response.text())
-      .then((responseText) => {
-        const html = responseText;
-        this.searchBulkOrderBodyId = new DOMParser()
-          .parseFromString(html, "text/html")
-          .getElementById("bulk-order-body").dataset.id;
-      });
   }
 
   static setListeners() {
@@ -64,27 +52,12 @@ class FacetFiltersForm extends HTMLElement {
     }
 
     sections.forEach((section) => {
-      let url;
-      if (
-        event &&
-        event.target.id == "facets__search-input" &&
-        event.target.value.trim()
-      ) {
-        url = `/search?section_id=${
-          this.searchBulkOrderBodyId
-        }&q=${event.target.value.trim()}&type=product&view=bulk-order`;
-      } else {
-        url = `${window.location.pathname}?section_id=${section.section}&${searchParams}`;
-      }
-      console.log(url);
-      const filterDataUrl = (element) => element.url === url;
+      const url = `${window.location.pathname}?section_id=${section.section}&${searchParams}`;
 
-      if (FacetFiltersForm.filterData.some(filterDataUrl)) {
-        FacetFiltersForm.renderSectionFromCache(filterDataUrl, event);
-        // } else if (event && event.target.id == "facets__search-input") {
-      } else {
-        FacetFiltersForm.renderSectionFromFetch(url, event);
-      }
+      const filterDataUrl = (element) => element.url === url;
+      filterData.some(filterDataUrl)
+        ? FacetFiltersForm.renderSectionFromCache(filterDataUrl, event)
+        : FacetFiltersForm.renderSectionFromFetch(url, event);
     });
 
     if (updateURLHash) FacetFiltersForm.updateURLHash(searchParams);
@@ -97,10 +70,7 @@ class FacetFiltersForm extends HTMLElement {
       .then((response) => response.text())
       .then((responseText) => {
         const html = responseText;
-        FacetFiltersForm.filterData = [
-          ...FacetFiltersForm.filterData,
-          { html, url },
-        ];
+        filterData = [...filterData, { html, url }];
         FacetFiltersForm.renderFilters(html, event);
         FacetFiltersForm.renderBulkOrderProducts(html);
         FacetFiltersForm.renderProductCount(html);
@@ -111,7 +81,7 @@ class FacetFiltersForm extends HTMLElement {
   }
 
   static renderSectionFromCache(filterDataUrl, event) {
-    const html = FacetFiltersForm.filterData.find(filterDataUrl).html;
+    const html = filterData.find(filterDataUrl).html;
     FacetFiltersForm.renderFilters(html, event);
     FacetFiltersForm.renderBulkOrderProducts(html);
     FacetFiltersForm.renderProductCount(html);
@@ -127,10 +97,8 @@ class FacetFiltersForm extends HTMLElement {
     let count;
     const dom = new DOMParser().parseFromString(html, "text/html");
     count = dom.getElementById("ProductCount")
-      ? dom
-          .getElementById("ProductCount")
-          .innerHTML.replace("result", "product")
-      : "0 products";
+      ? dom.getElementById("ProductCount").innerHTML
+      : "0 results";
     const container = document.getElementById("ProductCount");
     const containerMobile = document.getElementById("ProductCountMobile");
     const containerDesktop = document.getElementById("ProductCountDesktop");
@@ -149,7 +117,6 @@ class FacetFiltersForm extends HTMLElement {
   }
 
   static renderFilters(html, event) {
-    if (event && event.target.id == "facets__search-input") return;
     const parsedHTML = new DOMParser().parseFromString(html, "text/html");
 
     const facetDetailsElementsFromFetch = parsedHTML.querySelectorAll(
@@ -181,7 +148,6 @@ class FacetFiltersForm extends HTMLElement {
     const countsToRender = Array.from(facetDetailsElementsFromFetch).find(
       matchesId
     );
-
     facetsToRender.forEach((elementToRender, index) => {
       const currentElement = document.getElementById(elementToRender.id);
       // Element already rendered in the DOM so just update the innerHTML
@@ -200,7 +166,6 @@ class FacetFiltersForm extends HTMLElement {
         }
 
         if (elementToRender.parentElement) {
-          console.log(elementToRender.parentElement.id);
           document
             .querySelector(`#${elementToRender.parentElement.id} .js-filter`)
             .before(elementToRender);
@@ -332,11 +297,6 @@ class FacetFiltersForm extends HTMLElement {
 
       this.onSubmitForm(searchParams.toString(), event);
     }
-    /*
-    const formData = new FormData(event.target.closest('form'));
-    const searchParams = new URLSearchParams(formData).toString();
-    FacetFiltersForm.renderPage(searchParams, event);
-    */
   }
 
   onActiveFilterClick(event) {
@@ -346,11 +306,186 @@ class FacetFiltersForm extends HTMLElement {
     );
   }
 }
-FacetFiltersForm.filterData = [];
 FacetFiltersForm.searchParamsInitial = window.location.search.slice(1);
 FacetFiltersForm.searchParamsPrev = window.location.search.slice(1);
 customElements.define("facet-filters-form", FacetFiltersForm);
 FacetFiltersForm.setListeners();
+
+class FacetSearch extends HTMLElement {
+  constructor() {
+    super();
+    this.searchInput = this.querySelector("#facets__search-input");
+    FacetSearch.fetchSearchBulkOrderBodyId();
+    this.debouncedOnSubmit = debounce((event) => {
+      this.onSubmitHandler(event);
+    }, 500);
+    this.searchInput.addEventListener(
+      "input",
+      this.debouncedOnSubmit.bind(this)
+    );
+  }
+
+  static fetchSearchBulkOrderBodyId() {
+    fetch(`/search?view=bulk-order`)
+      .then((response) => response.text())
+      .then((responseText) => {
+        const html = responseText;
+        this.searchBulkOrderBodyId = new DOMParser()
+          .parseFromString(html, "text/html")
+          .getElementById("bulk-order-body").dataset.id;
+      });
+  }
+
+  static updateInputValue(value) {
+    this.searchInput.value = value;
+  }
+
+  static setListeners() {
+    const onHistoryChange = (event) => {
+      const searchParams = event.state
+        ? event.state.searchParams
+        : FacetSearch.searchParamsInitial;
+      if (searchParams === FacetSearch.searchParamsPrev) return;
+      FacetSearch.renderPage(searchParams, null, false);
+    };
+    window.addEventListener("popstate", onHistoryChange);
+  }
+
+  static renderPage(searchParams, event, updateURLHash = true) {
+    const searchParamsObj = new URLSearchParams(searchParams);
+    FacetSearch.searchParamsPrev = searchParams;
+    const facetDrawer = document.getElementById("FacetDrawer");
+    const countContainer = document.getElementById("ProductCount");
+    const countContainerMobile = document.getElementById("ProductCountMobile");
+    const countContainerDesktop = document.getElementById(
+      "ProductCountDesktop"
+    );
+    if (countContainer) {
+      countContainer.classList.add("loading");
+    }
+    if (countContainerMobile) {
+      countContainerMobile.classList.add("loading");
+    }
+    if (countContainerDesktop) {
+      countContainerDesktop.classList.add("loading");
+    }
+    if (facetDrawer) {
+      facetDrawer.classList.add("loading");
+    }
+
+    let url = "";
+    if (searchParamsObj.get("facets__search-input")) {
+      url = `/search?section_id=${
+        this.searchBulkOrderBodyId
+      }&q=${searchParamsObj.get(
+        "facets__search-input"
+      )}&type=product&view=bulk-order`;
+    }
+
+    this.updateInputValue(
+      searchParamsObj.get("facets__search-input")
+        ? searchParamsObj.get("facets__search-input")
+        : ""
+    );
+    const filterDataUrl = (element) => element.url === url;
+    filterData.some(filterDataUrl)
+      ? FacetSearch.renderSectionFromCache(filterDataUrl, event)
+      : FacetSearch.renderSectionFromFetch(url, event);
+
+    if (updateURLHash) FacetSearch.updateURLHash(searchParams);
+
+    document.dispatchEvent(new CustomEvent("collection:reloaded"));
+  }
+
+  static renderSectionFromFetch(url) {
+    fetch(url)
+      .then((response) => response.text())
+      .then((responseText) => {
+        const html = responseText;
+        filterData = [...filterData, { html, url }];
+        FacetSearch.renderBulkOrderProducts(html);
+        FacetSearch.renderProductCount(html);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }
+
+  static renderSectionFromCache(filterDataUrl) {
+    const html = filterData.find(filterDataUrl).html;
+    FacetSearch.renderBulkOrderProducts(html);
+    FacetSearch.renderProductCount(html);
+  }
+
+  static renderBulkOrderProducts(html) {
+    document.getElementById("bulk-order-body").innerHTML = new DOMParser()
+      .parseFromString(html, "text/html")
+      .getElementById("bulk-order-body").innerHTML;
+  }
+
+  static renderProductCount(html) {
+    let count;
+    const dom = new DOMParser().parseFromString(html, "text/html");
+    count = dom.getElementById("ProductCount")
+      ? dom.getElementById("ProductCount").innerHTML
+      : "0 results";
+    const container = document.getElementById("ProductCount");
+    const containerMobile = document.getElementById("ProductCountMobile");
+    const containerDesktop = document.getElementById("ProductCountDesktop");
+    if (container) {
+      container.innerHTML = count;
+      container.classList.remove("loading");
+    }
+    if (containerMobile) {
+      containerMobile.innerHTML = count;
+      containerMobile.classList.remove("loading");
+    }
+    if (containerDesktop) {
+      containerDesktop.innerHTML = count;
+      containerDesktop.classList.remove("loading");
+    }
+  }
+
+  static updateURLHash(searchParams) {
+    history.pushState(
+      { searchParams },
+      "",
+      `${window.location.pathname}${searchParams && "?".concat(searchParams)}`
+    );
+  }
+
+  static getSections() {
+    return [
+      {
+        section: document.getElementById("bulk-order-body").dataset.id,
+      },
+    ];
+  }
+
+  createSearchParams() {
+    this.searchInput.value = this.searchInput.value.trim();
+    return new URLSearchParams(
+      `${this.searchInput.name}=${this.searchInput.value}`
+    );
+  }
+
+  onSubmitForm(searchParams, event) {
+    FacetSearch.renderPage(searchParams, event);
+  }
+
+  onSubmitHandler(event) {
+    event.preventDefault();
+    FacetFiltersForm.renderPage("", event);
+    console.log("hehehe");
+    const searchParams = this.createSearchParams();
+    this.onSubmitForm(searchParams.toString(), event);
+  }
+}
+
+FacetSearch.searchParamsInitial = window.location.search.slice(1);
+FacetSearch.searchParamsPrev = window.location.search.slice(1);
+customElements.define("facet-search", FacetSearch);
+FacetSearch.setListeners();
 
 class FacetRemove extends HTMLElement {
   constructor() {

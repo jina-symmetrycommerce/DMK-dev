@@ -55,6 +55,7 @@
             <input type="hidden" name="q" value="{{ results.current_vendor | escape }}{{ results.current_type | escape }}"/>
           {%- endif -%}
           <div class="facets__wrapper">
+            <div class="facets-sort-filter__wrapper">
             {%- if enable_filtering and filter_type != 'drawer' -%}
               {%- liquid
                 if collection.metafields.theme.filter_max_items.value != blank
@@ -373,12 +374,18 @@
                 </noscript>
               </div>
             {%- endif -%}
-            <div class="facets__search">
-                <input type="text" id="facets__search-input" name="facets__search-input" class="facets__search-input" placeholder="Filter for products by search">
-            </div>
+          </div>
           </div>
         </form>
       </facet-filters-form>
+      <facet-toggle>
+      <label class="facets__toggle-label button button--secondary button--small">Filter by search bar
+        <input type="checkbox" id="facets__toggle" name="facets__toggle" class="facets__toggle hidden">
+      </label>
+    </facet-toggle>
+      <facet-search class="facets__search">
+        <input type="text" id="facets__search-input" name="facets__search-input" class="facets__search-input" placeholder="Filter for products by search">
+      </facet-search>
       {%- if enable_filtering or enable_sorting -%}
         <facet-drawer class="mobile-facets__wrapper">
           <details class="disclosure-has-popup{% if filter_type != 'drawer' %} medium-hide large-up-hide{% endif %}">
@@ -681,6 +688,7 @@
           </details>
         </facet-drawer>
       {%- endif -%}
+      
     {%- endif -%}
   </div>
 </{% if enable_sticky_facet %}sticky-facet-filters{% else %}div{% endif %}>
@@ -720,13 +728,21 @@
 
     <div class="product-count{% unless enable_viewing %} medium-hide large-up-hide{% endunless %}" role="status">
       <p id="ProductCount" class="product-count__text">
+        {% assign product_variant_count = 0 %}
+        {% if results.products %}
+          {% for result in results.products %}
+              {% assign product_variant_count = product_variant_count | plus: result.variants.size %}
+          {% endfor %}
+        {% else %}
+          {% for result in results.results %}
+              {% assign product_variant_count = product_variant_count | plus: result.variants.size %}
+          {% endfor %}
+        {% endif %}
         {%- liquid
           if results.results_count
-            echo 'templates.search.results_with_count' | t: terms: results.terms, count: results.results_count
-          elsif results.products_count == results.all_products_count
-            echo 'products.facets.product_count_simple' | t: count: results.products_count
+            echo 'templates.search.results_with_count' | t: terms: results.terms, count: product_variant_count
           else
-            echo 'products.facets.product_count' | t: product_count: results.products_count, count: results.all_products_count
+            echo 'products.facets.product_count_simple_bulk_order' | t: count: product_variant_count
           endif
         -%}
       </p>

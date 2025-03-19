@@ -318,6 +318,10 @@
         "one": "{{ count }} product",
         "other": "{{ count }} products"
       },
+      "product_count_simple_bulk_order": {
+        "one": "{{ count }} result",
+        "other": "{{ count }} results"
+      },
       "reset": "Reset",
       "show_less": "Show less",
       "show_more": "Show more",
