@@ -16,11 +16,20 @@ class FacetFiltersForm extends HTMLElement {
 
   static setListeners() {
     const onHistoryChange = (event) => {
+      console.log("history change");
       const searchParams = event.state
         ? event.state.searchParams
         : FacetFiltersForm.searchParamsInitial;
-      if (searchParams === FacetFiltersForm.searchParamsPrev) return;
-      FacetFiltersForm.renderPage(searchParams, null, false);
+      const searchParamsObj = new URLSearchParams(searchParams);
+      if (searchParams === FacetFiltersForm.searchParamsPrev) {
+        FacetFiltersForm.renderSearchInput();
+        return;
+      }
+      console.log(!searchParamsObj.get("facets__search-input"));
+      if (!searchParamsObj.get("facets__search-input")) {
+        FacetFiltersForm.renderPage(searchParams, null, false);
+        FacetFiltersForm.renderSearchInput();
+      }
     };
     window.addEventListener("popstate", onHistoryChange);
   }
@@ -90,11 +99,9 @@ class FacetFiltersForm extends HTMLElement {
   }
 
   static renderProductCount(html) {
-    let count;
     const dom = new DOMParser().parseFromString(html, "text/html");
-    count = dom.getElementById("ProductCount")
-      ? dom.getElementById("ProductCount").innerHTML
-      : "0 results";
+    const count = dom.getElementById("ProductCount").innerHTML;
+    console.log("filter", count);
     const container = document.getElementById("ProductCount");
     const containerMobile = document.getElementById("ProductCountMobile");
     const containerDesktop = document.getElementById("ProductCountDesktop");
@@ -227,6 +234,15 @@ class FacetFiltersForm extends HTMLElement {
     }
   }
 
+  static renderSearchInput() {
+    const searchInputsToUpdate = document.querySelectorAll(
+      ".facets__search-input"
+    );
+    searchInputsToUpdate.forEach((element) => {
+      element.value = "";
+    });
+  }
+
   static updateURLHash(searchParams) {
     history.pushState(
       { searchParams },
@@ -262,7 +278,11 @@ class FacetFiltersForm extends HTMLElement {
 
   onSubmitHandler(event) {
     event.preventDefault();
-    FacetSearch.renderPage("", null, false);
+    console.log("filter form submit");
+    if (event && event.target.id == "facets__search-input") return;
+    // FacetSearch.renderPage("", null, false);
+    FacetFiltersForm.renderSearchInput();
+
     const currentForm = event.target.closest("form");
     if (currentForm.id === "FacetFiltersFormMobile") {
       const searchParams = this.createSearchParams(currentForm);
@@ -310,12 +330,12 @@ FacetFiltersForm.setListeners();
 class FacetSearch extends HTMLElement {
   constructor() {
     super();
-    FacetSearch.searchInput = this.querySelector("#facets__search-input");
+    this.searchInput = this.querySelector(".facets__search-input");
     FacetSearch.fetchSearchBulkOrderBodyId();
     this.debouncedOnSubmit = debounce((event) => {
       this.onSubmitHandler(event);
     }, 500);
-    FacetSearch.searchInput.addEventListener(
+    this.searchInput.addEventListener(
       "input",
       this.debouncedOnSubmit.bind(this)
     );
@@ -332,8 +352,8 @@ class FacetSearch extends HTMLElement {
       });
   }
 
-  static updateInputValue(value) {
-    FacetSearch.searchInput.value = value;
+  updateSearchInputValue(value) {
+    this.searchInput.value = value;
   }
 
   static setListeners() {
@@ -341,8 +361,10 @@ class FacetSearch extends HTMLElement {
       const searchParams = event.state
         ? event.state.searchParams
         : FacetSearch.searchParamsInitial;
+      const searchParamsObj = new URLSearchParams(searchParams);
       if (searchParams === FacetSearch.searchParamsPrev) return;
-      FacetSearch.renderPage(searchParams, null, false);
+      if (searchParamsObj.get("facets__search-input"))
+        FacetSearch.renderPage(searchParams, null, false);
     };
     window.addEventListener("popstate", onHistoryChange);
   }
@@ -368,13 +390,10 @@ class FacetSearch extends HTMLElement {
     if (facetDrawer) {
       facetDrawer.classList.add("loading");
     }
-    let url = "";
+    let url = "/collections/bulk-order";
     if (searchParamsObj.get("facets__search-input")) {
       const query = searchParamsObj.get("facets__search-input");
       url = `/search?section_id=${this.searchBulkOrderBodyId}&q=${query}&type=product&view=bulk-order`;
-      FacetSearch.updateInputValue(query);
-    } else {
-      FacetSearch.updateInputValue("");
     }
     const filterDataUrl = (element) => element.url === url;
     filterData.some(filterDataUrl)
@@ -392,6 +411,7 @@ class FacetSearch extends HTMLElement {
         filterData = [...filterData, { html, url }];
         FacetSearch.renderBulkOrderProducts(html);
         FacetSearch.renderProductCount(html);
+        FacetSearch.renderSearchInput(html);
       })
       .catch((e) => {
         console.error(e);
@@ -402,6 +422,7 @@ class FacetSearch extends HTMLElement {
     const html = filterData.find(filterDataUrl).html;
     FacetSearch.renderBulkOrderProducts(html);
     FacetSearch.renderProductCount(html);
+    FacetSearch.renderSearchInput(html);
   }
 
   static renderBulkOrderProducts(html) {
@@ -416,6 +437,7 @@ class FacetSearch extends HTMLElement {
     count = dom.getElementById("ProductCount")
       ? dom.getElementById("ProductCount").innerHTML
       : "0 results";
+    console.log("count", count);
     const container = document.getElementById("ProductCount");
     const containerMobile = document.getElementById("ProductCountMobile");
     const containerDesktop = document.getElementById("ProductCountDesktop");
@@ -431,6 +453,21 @@ class FacetSearch extends HTMLElement {
       containerDesktop.innerHTML = count;
       containerDesktop.classList.remove("loading");
     }
+  }
+
+  static renderSearchInput(html) {
+    console.log("search input");
+    const dom = new DOMParser().parseFromString(html, "text/html");
+
+    const searchInputFetchValue = dom.getElementById("Search-In-Template")
+      ? dom.getElementById("Search-In-Template").value
+      : "";
+    const searchInputsToUpdate = document.querySelectorAll(
+      ".facets__search-input"
+    );
+    searchInputsToUpdate.forEach((element) => {
+      element.value = searchInputFetchValue;
+    });
   }
 
   static updateURLHash(searchParams) {
@@ -450,9 +487,9 @@ class FacetSearch extends HTMLElement {
   }
 
   createSearchParams() {
-    FacetSearch.searchInput.value = FacetSearch.searchInput.value.trim();
+    this.searchInput.value = this.searchInput.value.trim();
     return new URLSearchParams(
-      `${FacetSearch.searchInput.name}=${FacetSearch.searchInput.value}`
+      `${this.searchInput.name}=${this.searchInput.value}`
     );
   }
 

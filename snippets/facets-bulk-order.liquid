@@ -447,6 +447,9 @@
                   </div>
                   <div class="mobile-facets__main">
                     {%- if enable_filtering -%}
+                      <facet-search class="facets__search">
+                        <input type="text" id="facets__search-input" name="facets__search-input" class="facets__search-input" placeholder="Filter for products by search">
+                      </facet-search>
                       {%- for filter in results.filters -%}
                         {%- liquid
                           assign has_visual_display = false
