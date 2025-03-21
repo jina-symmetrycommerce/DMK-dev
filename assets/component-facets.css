@@ -707,6 +707,9 @@ a.active-facets__button--dark::after {
   transform: translateX(100%);
 }
 
+/*
+original open state for mobile drawer
+
 .js details[open] > facet-filters-form .mobile-facets {
   transition-property: transform, visibility;
   transition-duration: var(--duration-long);
@@ -715,6 +718,19 @@ a.active-facets__button--dark::after {
 
 .no-js details[open] > facet-filters-form .mobile-facets,
 .js details[open].menu-opening > facet-filters-form .mobile-facets {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+*/
+.js details[open] > .mobile-facets {
+  transition-property: transform, visibility;
+  transition-duration: var(--duration-long);
+  transition-timing-function: ease;
+}
+
+.no-js details[open] > .mobile-facets,
+.js details[open].menu-opening > .mobile-facets {
   transform: translateX(0);
   visibility: visible;
 }
@@ -741,6 +757,7 @@ a.active-facets__button--dark::after {
   background-color: rgb(var(--color-background));
   width: calc(100% - 4rem);
   margin-inline-start: auto;
+  padding-top: 4rem;
   height: 100%;
   pointer-events: all;
   display: flex;
@@ -749,7 +766,10 @@ a.active-facets__button--dark::after {
   overflow-x: hidden;
   scrollbar-width: thin;
 }
-
+.mobile-facets__inner .facets__search-input {
+  width: calc(100% - 2rem);
+  margin: 2rem 0;
+}
 .mobile-facets__header {
   background-color: rgb(var(--color-background));
   border-bottom: 0.1rem solid rgb(var(--color-border));
@@ -765,7 +785,28 @@ a.active-facets__button--dark::after {
   flex-grow: 1;
   position: relative;
 }
+.separator.mobile-facets__heading.h2 {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 0 2rem;
 
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 0.3rem solid rgb(var(--color-border));
+}
+
+.separator:not(:empty)::before {
+  margin-right: 1em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 1em;
+}
 .mobile-facets__heading {
   font-size: calc(var(--font-heading-scale) * 1.4rem);
   margin: 0;
@@ -1912,4 +1953,16 @@ facet-drawer.loading > details[open] > summary::after {
 
 .facets__toggle {
   margin: 0;
+}
+.filters-search-wrapper{
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.facet__toggle-wrapper {
+  position: relative;
+  .hide-toggle {
+    position: absolute;
+    visibility: hidden;
+  }
 }

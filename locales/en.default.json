@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "accessibility": {
     "close": "Close",
@@ -300,6 +309,7 @@
       "clear_all": "Clear all",
       "clear_filter": "Clear filter",
       "filter_and_operator_subtitle": "Match all",
+      "filter_by_search": "Search",
       "filter_and_sort": "Filter and sort",
       "filter_button": "Filter",
       "filter_by_label": "Filter",

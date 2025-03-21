@@ -184,7 +184,7 @@ class BulkOrderForm extends HTMLElement {
 
           // Add loading feedback before hiding the node
           const loadingElement = document.createElement("div");
-          loadingElement.innerHTML = `<img src="{{ "loading.gif" | asset_url }}" />`;
+          loadingElement.innerHTML = `loading!`;
           scrollNode.parentNode.insertBefore(
             loadingElement,
             scrollNode.nextSibling
