@@ -1,8 +1,4 @@
 {%- liquid
-  assign products_per_row = section.settings.products_per_row
-  assign products_per_page = section.settings.products_per_row | times: section.settings.rows_per_page
-  assign default_layout = 'grid-' | append: products_per_row
-
   assign enable_sticky_facet = section.settings.enable_sticky_facet
   assign enable_sorting = section.settings.enable_sorting
   assign enable_viewing = section.settings.enable_viewing
@@ -166,7 +162,6 @@
         enable_sticky_facet: enable_sticky_facet,
         enable_filtering_color_swatches: enable_filtering_color_swatches,
         enable_viewing: enable_viewing,
-        default_layout: default_layout,
         filter_max_items: filter_max_items,
         color_swatches_add_label: color_swatches_add_label
       %}
@@ -180,24 +175,6 @@
   "tag": "section",
   "class": "section",
   "settings": [
-    {
-      "type": "range",
-      "id": "products_per_row",
-      "min": 2,
-      "max": 4,
-      "step": 1,
-      "default": 4,
-      "label": "t:sections.main-search.settings.products_per_row.label"
-    },
-    {
-      "type": "range",
-      "id": "rows_per_page",
-      "min": 2,
-      "max": 20,
-      "step": 1,
-      "default": 2,
-      "label": "t:sections.main-search.settings.rows_per_page.label"
-    },
     {
       "type": "select",
       "id": "columns_mobile",

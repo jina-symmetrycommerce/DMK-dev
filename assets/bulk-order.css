@@ -194,7 +194,7 @@
   width: 100%;
   top: 0;
   background-color: var(--color-critical);
-  z-index: 21;
+  z-index: 100;
   animation: peek 2s ease 0s 2 alternate forwards;
 }
 
