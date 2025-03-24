@@ -185,34 +185,36 @@
         </div>
         <div class="bulk-order-container">
           <form id="bulk-order-quantities" class="bulk-order-quantities" data-id="{{ section.id }}">
-            <table class="bulk-order-body" id="bulk-order-body" data-id="{{ section.id }}">
+            <div class="bulk-order-body" id="bulk-order-body" data-id="{{ section.id }}">
               {% paginate search.results by 10 %}
                 {% for item in search.results %}
                   {% if item.object_type == 'product' %}
                     {% for variant in item.variants %}
-                      <tr
-                        class="variant page-width"
+                      <div
+                        class="variant-row desktop-table-row"
                         id="variant-{{ forloop.parentloop.index | plus: paginate.current_offset }}-{{ forloop.index }}"
                         data-variant-id="{{ variant.id }}"
                       >
-                        {% if variant.featured_image != blank %}
-                          <td><img src="{{ variant | image_url: height: 100}}"></td>
-                        {% elsif item.featured_image != blank %}
-                          <td><img src="{{ item | image_url: height: 100}}"></td>
-                        {% endif %}
-                        <td>
-                          <div>
+                        <div class="variant-image desktop-table-cell">
+                          {% if variant.featured_image != blank %}
+                            <img src="{{ variant | image_url: height: 100}}">
+                          {% elsif item.featured_image != blank %}
+                            <img src="{{ item | image_url: height: 100}}">
+                          {% endif %}
+                        </div>
+                        <div class="variant-title-price desktop-table-cell">
+                          <p class="variant-title">
                             {% if variant.title == 'Default Title' %}
                               {{ item.title }}
                             {% else %}
                               {{ variant.title }}
                             {% endif %}
-                          </div>
-                          <div>{{ variant.price | money }}</div>
-                        </td>
+                          </p>
+                          <p class="variant-price">{{- variant.price | money -}}</p>
+                        </div>
                         {% comment %} <td>SKU: {{ variant.sku }}</td> {% endcomment %}
-                        <td>Stock: {{ variant.inventory_quantity }}</td>
-                        <td>
+                        <div class="variant-stock desktop-table-cell">Stock: {{ variant.inventory_quantity }}</div>
+                        <div class="variant-quantity-input desktop-table-cell">
                           <label for="Quantity-{{ variant.id }}" class="visually-hidden">
                             {{- 'products.product.quantity.label' | t -}}
                           </label>
@@ -248,25 +250,25 @@
                               {% render 'icon', icon: 'plus' %}
                             </button>
                           </quantity-input>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     {% endfor %}
                   {% endif %}
                 {% endfor %}
                 {% if paginate.next %}
-                  <tr
-                    class="bulk-order-form-more current hidden"
+                  <div
+                    class="bulk-order-form-more desktop-table-row current"
                     data-next-page="{{ paginate.current_page | plus: 1 }}"
                     data-total-pages="{{paginate.pages }}"
                   >
-                    <td><a href="{{ paginate.next.url }}">More</a></td>
-                  </tr>
+                    <div class="desktop-table-cell"><a class="more-link" href="{{ paginate.next.url }}">More ⬇</a></div>
+                  </div>
                 {% endif %}
-                <tr class="hidden" id="product-list-foot"></tr>
+                <div class="hidden desktop-table-row" id="product-list-foot"></div>
               {% endpaginate %}
-            </table>
+            </div>
           </form>
-          <div class="add-to-cart-container">
+          <div class="add-to-cart-container page-width">
             <button
               id="bulk-order-form__submit"
               type="submit"

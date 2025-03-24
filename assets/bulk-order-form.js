@@ -138,11 +138,12 @@ class BulkOrderForm extends HTMLElement {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop; // Current scroll position
     const windowHeight = window.innerHeight; // Height of the viewport
 
-    if (documentHeight - windowHeight < scrollTop + windowHeight) {
+    if (documentHeight - 50 < scrollTop + windowHeight) {
       const scrollNode = document.querySelector(
         ".bulk-order-form-more.current"
       );
-      const scrollLink = scrollNode?.querySelector("td a"); // Select the last link inside "product#more"
+      const scrollLink = scrollNode?.querySelector("a"); // Select the last link inside "product#more"
+
       if (scrollNode && scrollNode.style.display !== "none") {
         const scrollURL = scrollLink?.getAttribute("href");
 
@@ -156,10 +157,14 @@ class BulkOrderForm extends HTMLElement {
 
               const parser = new DOMParser();
               const htmlDocument = parser.parseFromString(data, "text/html");
-              const filteredData = htmlDocument.querySelectorAll(".variant");
+              const filteredData =
+                htmlDocument.querySelectorAll(".variant-row");
               const productListFoot = this.querySelector("#product-list-foot");
-
+              let n = 1;
               filteredData.forEach((product) => {
+                // nice cascade effect
+                product.style.animationDelay = 0.15 * n + "s";
+                n += 1;
                 if (productListFoot) {
                   productListFoot.parentNode.insertBefore(
                     product,
@@ -183,35 +188,47 @@ class BulkOrderForm extends HTMLElement {
             });
 
           // Add loading feedback before hiding the node
-          const loadingElement = document.createElement("div");
-          loadingElement.innerHTML = `loading!`;
+          const loadingRow = document.createElement("div");
+          const loadingWrapper = document.createElement("div");
+          const loadingBar = document.createElement("span");
+          loadingRow.classList.add(
+            "bulk-order-form-loading",
+            "desktop-table-row"
+          );
+          loadingWrapper.classList.add("wrapper", "desktop-table-cell");
+          loadingBar.classList.add("loading-bar");
+
+          loadingWrapper.appendChild(loadingBar);
+          loadingRow.appendChild(loadingWrapper);
           scrollNode.parentNode.insertBefore(
-            loadingElement,
+            loadingRow,
             scrollNode.nextSibling
           );
           scrollNode.classList.remove("current");
+          scrollNode.classList.add("hidden");
         }
       }
     }
   }
   createMoreLink(nextPage, totalPages) {
-    const tr = document.createElement("tr");
-    tr.classList.add("bulk-order-form-more", "current", "hidden");
+    const tr = document.createElement("div");
+    tr.classList.add("bulk-order-form-more", "current", "desktop-table-row");
     tr.dataset.nextPage = nextPage + 1;
     tr.dataset.totalPages = totalPages;
 
-    const td = document.createElement("td");
+    const td = document.createElement("div");
+    td.classList.add("desktop-table-cell");
 
     const anchor = document.createElement("a");
+    anchor.classList.add("more-link");
     anchor.href = `${window.location.pathname}?page=${nextPage + 1}${
       window.location.search &&
       "&".concat(window.location.search.replace("?", ""))
     }`;
-    anchor.textContent = "More";
+    anchor.textContent = "More ⬇";
 
     td.appendChild(anchor);
     tr.appendChild(td);
-
     return tr;
   }
 }
