@@ -331,11 +331,17 @@ class FacetSearch extends HTMLElement {
   constructor() {
     super();
     this.searchInput = this.querySelector(".facets__search-input");
+    this.mobileSearchInput = this.querySelector(".mobile-facets__search-input");
+    this.mobileSearchSubmit = this.querySelector("#mobileSearchSubmit");
     FacetSearch.fetchSearchBulkOrderBodyId();
     this.debouncedOnSubmit = debounce((event) => {
       this.onSubmitHandler(event);
     }, 500);
-    this.searchInput.addEventListener(
+    this.mobileSearchSubmit && this.mobileSearchSubmit.addEventListener(
+      "click", 
+      this.debouncedOnSubmit.bind(this)
+    )
+    this.searchInput && this.searchInput.addEventListener(
       "input",
       this.debouncedOnSubmit.bind(this)
     );
@@ -492,7 +498,12 @@ class FacetSearch extends HTMLElement {
       `${this.searchInput.name}=${this.searchInput.value}`
     );
   }
-
+  createMobileSearchParams() {
+    this.mobileSearchInput.value = this.mobileSearchInput.value.trim();
+    return new URLSearchParams(
+      `${this.mobileSearchInput.name}=${this.mobileSearchInput.value}`
+    )
+  }
   onSubmitForm(searchParams, event) {
     FacetSearch.renderPage(searchParams, event);
   }
@@ -500,8 +511,15 @@ class FacetSearch extends HTMLElement {
   onSubmitHandler(event) {
     event.preventDefault();
     FacetFiltersForm.renderPage("", null, false);
-    const searchParams = this.createSearchParams();
-    this.onSubmitForm(searchParams.toString(), event);
+    console.log('this in on submit: ',this);
+    console.log('event in on submit: ',event);
+    if(event.target === this.mobileSearchSubmit){
+      const searchParams = this.createMobileSearchParams();
+      this.onSubmitForm(searchParams.toString(), this.mobileSearchInput.value);
+    }else{
+      const searchParams = this.createSearchParams();
+      this.onSubmitForm(searchParams.toString(), event);
+    }
   }
 }
 

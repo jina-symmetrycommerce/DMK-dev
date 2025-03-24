@@ -138,7 +138,7 @@ class BulkOrderForm extends HTMLElement {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop; // Current scroll position
     const windowHeight = window.innerHeight; // Height of the viewport
 
-    if (documentHeight - 50 < scrollTop + windowHeight) {
+    if (documentHeight - windowHeight < scrollTop + windowHeight) {
       const scrollNode = document.querySelector(
         ".bulk-order-form-more.current"
       );

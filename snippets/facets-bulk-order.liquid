@@ -420,7 +420,7 @@
           </form>
         </facet-filters-form>
 
-        <facet-search class="facets__search hidden" data-facet="search">
+        <facet-search class="facets__search hidden small-hide" data-facet="search">
           <input type="text" id="facets__search-input" name="facets__search-input" class="facets__search-input" placeholder="Filter for products by search">
         </facet-search>
       </div>
@@ -472,10 +472,16 @@
                     </div>
                   </div>
                   <div class="mobile-facets__main">
-                    <input type="text" id="facets__search-input" name="facets__search-input" class="facets__search-input" placeholder="Filter for products by search">
+                    <input type="text" id="mobileFacetsSearchInput" name="facets__search-input" class="mobile-facets__search-input" placeholder="Filter for products by name">
                   </div>
+                  <div class="no-js-hidden mobile-facets__footer">
+                      <button class="button" id="mobileSearchSubmit">submit search</button>
+                      <facet-remove>
+                        <a href="{{ results.url }}" class="mobile-facets__clear link link--underline">{{ 'products.facets.clear' | t }}</a>
+                      </facet-remove>
+                    </div>
                 </facet-search>
-                <div class="separator mobile-facets__heading h2">Or</div>
+                <div class="separator">Or</div>
                 <facet-filters-form>
                   <form id="FacetFiltersFormMobile">
                       <div class="mobile-facets__header">
