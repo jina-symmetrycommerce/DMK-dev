@@ -83,9 +83,21 @@
                   >
                     <div class="variant-image desktop-table-cell">
                       {% if variant.featured_image != blank %}
-                        <img src="{{ variant | image_url: width: 500, height: 500, crop: "center"}}">
+                        <img
+                          alt="{% if variant.title == 'Default Title' %}{{- product.title -}}{% else %}{{- variant.title -}}{% endif %} image"
+                          src="{{ variant | image_url: width: 500, height: 500, crop: "center"}}"
+                        >
                       {% elsif product.featured_image != blank %}
-                        <img src="{{ product | image_url: width: 500, height: 500, crop: "center"}}">
+                        <img
+                          alt="
+                            {% if variant.title == 'Default Title' %}
+                              {{- product.title -}}
+                            {% else %}
+                              {{- variant.title -}}
+                            {% endif %} image
+                          "
+                          src="{{ product | image_url: width: 500, height: 500, crop: "center"}}"
+                        >
                       {% endif %}
                     </div>
                     <div class="variant-title-price desktop-table-cell">
