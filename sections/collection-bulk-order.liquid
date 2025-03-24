@@ -22,8 +22,6 @@
 {{ 'component-product-grid.css' | asset_url | stylesheet_tag }}
 
 <link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'bulk-order.css' | asset_url }}" media="print" onload="this.media='all'">
-<script src="{{ 'bulk-order-form.js' | asset_url }}" defer="defer"></script>
 {%- if settings.quick_view_enabled and section.settings.enable_quick_view -%}
   <link rel="stylesheet" href="{{ 'section-main-product.css' | asset_url }}" media="print" onload="this.media='all'">
   <link
@@ -48,137 +46,137 @@
 {%- endif -%}
 
 <div class="section--padding">
-  {%- if enable_filtering or enable_sorting or enable_viewing -%}
-    {%- if collection.all_products_count > 0 -%}
-      {{ 'component-facets.css' | asset_url | stylesheet_tag }}
-      <script src="{{ 'facets-bulk-order.js' | asset_url }}" defer="defer"></script>
-    {%- endif -%}
-  {%- endif -%}
-
   <div class="product-grid-container">
-    {%- liquid
-      if enable_filtering or enable_sorting or enable_viewing
-        if collection.all_products_count > 0
-          render 'facets-bulk-order', results: collection, filter_type: filter_type, enable_filtering: enable_filtering, enable_filtering_color_swatches: enable_filtering_color_swatches, enable_sorting: enable_sorting, enable_viewing: enable_viewing, enable_sticky_facet: enable_sticky_facet, default_layout: default_layout, filter_max_items: filter_max_items, color_swatches_add_label: color_swatches_add_label
-        endif
-      endif
-    -%}
-    <bulk-order-form
-      id="bulk-order-form"
-      data-id="{{ section.id }}"
-    >
-      <div class="bulk-order-form__error-message-wrapper" role="alert" hidden>
-        <span class="bulk-order-form__error-message"></span>
-      </div>
-      <div class="bulk-order-container">
-        <form id="bulk-order-quantities" class="bulk-order-quantities" data-id="{{ section.id }}">
-          <div class="bulk-order-body desktop-table" id="bulk-order-body" data-id="{{ section.id }}">
-            {% paginate collection.products by 10 %}
-              {% for product in collection.products %}
-                {% for variant in product.variants %}
-                  <div
-                    class="variant-row desktop-table-row"
-                    id="variant-{{ forloop.parentloop.index | plus: paginate.current_offset }}-{{ forloop.index }}"
-                    data-variant-id="{{ variant.id }}"
-                  >
-                    <div class="variant-image desktop-table-cell">
-                      {% if variant.featured_image != blank %}
-                        <img
-                          alt="{% if variant.title == 'Default Title' %}{{- product.title -}}{% else %}{{- variant.title -}}{% endif %} image"
-                          src="{{ variant | image_url: width: 500, height: 500, crop: "center"}}"
-                        >
-                      {% elsif product.featured_image != blank %}
-                        <img
-                          alt="
-                            {% if variant.title == 'Default Title' %}
-                              {{- product.title -}}
-                            {% else %}
-                              {{- variant.title -}}
-                            {% endif %} image
-                          "
-                          src="{{ product | image_url: width: 500, height: 500, crop: "center"}}"
-                        >
-                      {% endif %}
-                    </div>
-                    <div class="variant-title-price desktop-table-cell">
-                      <p class="variant-title">
-                        {% if variant.title == 'Default Title' %}
-                          {{- product.title -}}
-                        {% else %}
-                          {{- variant.title -}}
-                        {% endif %}
-                      </p>
-                      <p class="variant-price">{{- variant.price | money -}}</p>
-                    </div>
-                    <div class="variant-stock desktop-table-cell">Stock: {{ variant.inventory_quantity }}</div>
-                    <div class="variant-quantity-input desktop-table-cell">
-                      <label for="Quantity-{{ variant.id }}" class="visually-hidden">
-                        {{- 'products.product.quantity.label' | t -}}
-                      </label>
-                      <quantity-input class="quantity">
-                        <button class="quantity__button no-js-hidden" name="minus" type="button">
-                          <span class="visually-hidden">
-                            {{- 'products.product.quantity.decrease' | t: product: variant.title | escape -}}
-                          </span>
-                          {% render 'icon', icon: 'minus' %}
-                        </button>
-                        <input
-                          class="quantity__input"
-                          type="number"
-                          data-quantity-variant-id="{{ variant.id }}"
-                          name="quantity-{{ variant.id }}"
-                          value="0"
-                          {% # theme-check-disable %}
-                          data-cart-quantity="{{ cart | item_count_for_variant: variant.id }}"
-                          min="0"
-                          data-min="{{ variant.quantity_rule.min }}"
-                          {% if variant.quantity_rule.max != null %}
-                            max="{{ variant.quantity_rule.max }}"
-                          {% endif %}
-                          step="{{ variant.quantity_rule.increment }}"
-                          {% # theme-check-enable %}
-                          aria-label="{{ 'products.product.quantity.input_label' | t: product: variant.title | escape }}"
-                          id="Quantity-{{ variant.id }}"
-                        >
-                        <button class="quantity__button no-js-hidden" name="plus" type="button">
-                          <span class="visually-hidden">
-                            {{- 'products.product.quantity.increase' | t: product: variant.title | escape -}}
-                          </span>
-                          {% render 'icon', icon: 'plus' %}
-                        </button>
-                      </quantity-input>
-                    </div>
-                  </div>
-                {% endfor %}
-              {% endfor %}
-              {% if paginate.next %}
-                <div
-                  class="bulk-order-form-more desktop-table-row current"
-                  data-next-page="{{ paginate.current_page | plus: 1 }}"
-                  data-total-pages="{{paginate.pages }}"
-                >
-                  <div class="desktop-table-cell"><a class="more-link" href="{{ paginate.next.url }}">More ⬇</a></div>
-                </div>
-              {% endif %}
-              <div class="hidden desktop-table-row" id="product-list-foot"></div>
-            {% endpaginate %}
-          </div>
-        </form>
-        <div class="add-to-cart-container page-width">
-          <button
-            id="bulk-order-form__submit"
-            type="submit"
-            name="bulkorderadd"
-            form="bulk-order-quantities"
-            class="bulk-order-form__submit button button--small"
-          >
-            Add all to cart
-          </button>
-        </div>
-      </div>
-    </bulk-order-form>
+    {% render 'bulk-order',
+      results: collection,
+      enable_filtering: enable_filtering,
+      enable_sorting: enable_sorting,
+      enable_sticky_facet: enable_sticky_facet,
+      enable_filtering_color_swatches: enable_filtering_color_swatches,
+      enable_viewing: enable_viewing,
+      default_layout: default_layout,
+      filter_max_items: filter_max_items,
+      color_swatches_add_label: color_swatches_add_label
+    %}
   </div>
 </div>
+
+{% comment %}
+  <bulk-order-form
+    id="bulk-order-form"
+    data-id="{{ section.id }}"
+  >
+    <div class="bulk-order-form__error-message-wrapper" role="alert" hidden>
+      <span class="bulk-order-form__error-message"></span>
+    </div>
+    <div class="bulk-order-container">
+      <form id="bulk-order-quantities" class="bulk-order-quantities" data-id="{{ section.id }}">
+        <div class="bulk-order-body desktop-table" id="bulk-order-body" data-id="{{ section.id }}">
+          {% paginate collection.products by 10 %}
+            {% for product in collection.products %}
+              {% for variant in product.variants %}
+                <div
+                  class="variant-row desktop-table-row"
+                  id="variant-{{ forloop.parentloop.index | plus: paginate.current_offset }}-{{ forloop.index }}"
+                  data-variant-id="{{ variant.id }}"
+                >
+                  <div class="variant-image desktop-table-cell">
+                    {% if variant.featured_image != blank %}
+                      <img
+                        alt="{% if variant.title == 'Default Title' %}{{- product.title -}}{% else %}{{- variant.title -}}{% endif %} image"
+                        src="{{ variant | image_url: width: 500, height: 500, crop: "center"}}"
+                      >
+                    {% elsif product.featured_image != blank %}
+                      <img
+                        alt="
+                          {% if variant.title == 'Default Title' %}
+                            {{- product.title -}}
+                          {% else %}
+                            {{- variant.title -}}
+                          {% endif %} image
+                        "
+                        src="{{ product | image_url: width: 500, height: 500, crop: "center"}}"
+                      >
+                    {% endif %}
+                  </div>
+                  <div class="variant-title-price desktop-table-cell">
+                    <p class="variant-title">
+                      {% if variant.title == 'Default Title' %}
+                        {{- product.title -}}
+                      {% else %}
+                        {{- variant.title -}}
+                      {% endif %}
+                    </p>
+                    <p class="variant-price">{{- variant.price | money -}}</p>
+                  </div>
+                  <div class="variant-stock desktop-table-cell">Stock: {{ variant.inventory_quantity }}</div>
+                  <div class="variant-quantity-input desktop-table-cell">
+                    <label for="Quantity-{{ variant.id }}" class="visually-hidden">
+                      {{- 'products.product.quantity.label' | t -}}
+                    </label>
+                    <quantity-input class="quantity">
+                      <button class="quantity__button no-js-hidden" name="minus" type="button">
+                        <span class="visually-hidden">
+                          {{- 'products.product.quantity.decrease' | t: product: variant.title | escape -}}
+                        </span>
+                        {% render 'icon', icon: 'minus' %}
+                      </button>
+                      <input
+                        class="quantity__input"
+                        type="number"
+                        data-quantity-variant-id="{{ variant.id }}"
+                        name="quantity-{{ variant.id }}"
+                        value="0"
+                        {% # theme-check-disable %}
+                        data-cart-quantity="{{ cart | item_count_for_variant: variant.id }}"
+                        min="0"
+                        data-min="{{ variant.quantity_rule.min }}"
+                        {% if variant.quantity_rule.max != null %}
+                          max="{{ variant.quantity_rule.max }}"
+                        {% endif %}
+                        step="{{ variant.quantity_rule.increment }}"
+                        {% # theme-check-enable %}
+                        aria-label="{{ 'products.product.quantity.input_label' | t: product: variant.title | escape }}"
+                        id="Quantity-{{ variant.id }}"
+                      >
+                      <button class="quantity__button no-js-hidden" name="plus" type="button">
+                        <span class="visually-hidden">
+                          {{- 'products.product.quantity.increase' | t: product: variant.title | escape -}}
+                        </span>
+                        {% render 'icon', icon: 'plus' %}
+                      </button>
+                    </quantity-input>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+            {% if paginate.next %}
+              <div
+                class="bulk-order-form-more desktop-table-row current"
+                data-next-page="{{ paginate.current_page | plus: 1 }}"
+                data-total-pages="{{paginate.pages }}"
+              >
+                <div class="desktop-table-cell"><a class="more-link" href="{{ paginate.next.url }}">More ⬇</a></div>
+              </div>
+            {% endif %}
+            <div class="hidden desktop-table-row" id="product-list-foot"></div>
+          {% endpaginate %}
+        </div>
+      </form>
+      <div class="add-to-cart-container page-width">
+        <button
+          id="bulk-order-form__submit"
+          type="submit"
+          name="bulkorderadd"
+          form="bulk-order-quantities"
+          class="bulk-order-form__submit button button--small"
+        >
+          Add all to cart
+        </button>
+      </div>
+    </div>
+  </bulk-order-form>
+{% endcomment %}
 
 {% schema %}
 {
