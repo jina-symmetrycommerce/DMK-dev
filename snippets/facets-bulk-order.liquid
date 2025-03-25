@@ -1,6 +1,6 @@
 {% comment %}theme-check-disable TemplateLength{% endcomment %}
 {% comment %}
-  Renders facets (filtering and sorting)
+  Renders facets (filtering and sorting) for bulk order form
 
   Accepts:
   - results: {Object} Collection or Search object
@@ -14,7 +14,7 @@
   - color_swatches_add_label: {Boolean} Add label to color swatches
 
   Usage:
-  {% render 'facets', results: collection, enable_filtering: true, enable_sorting: true, filter_type: 'vertical' %}
+  {% render 'facets-bulk-order', results: collection, enable_filtering: true, enable_sorting: true, filter_type: 'vertical' %}
 {% endcomment %}
 
 {%- liquid

@@ -1,12 +1,11 @@
 {% comment %}theme-check-disable TemplateLength{% endcomment %}
 {% comment %}
-  Renders bulk order form
+  Renders bulk order form - Designed by Symmetry Commerce
 
   Accepts:
   - results: {Object} Collection or Search object
-  - enable_sticky_facet: {Boolean} Shows on the screen as customers scroll up when true
+  - enable_sticky_facet: {Boolean} Shows on the screen as customers scroll up when true x
   - enable_filtering: {Boolean} Show filtering when true
-  - filter_type: {String} Type of filter
   - enable_filtering_color_swatches: {Boolean} Show color swatches in the filter when true
   - enable_sorting: {Boolean} Show sorting when true
   - enable_viewing: {Boolean} Show layout switcher when true
@@ -14,7 +13,7 @@
   - color_swatches_add_label: {Boolean} Add label to color swatches
 
   Usage:
-  {% render 'facets-bulk-order', results: collection, enable_filtering: true, enable_sorting: true, filter_type: 'vertical' %}
+  {% render 'bulk-order', results: collection, enable_filtering: true, enable_sorting: true, filter_type: 'vertical' %}
 {% endcomment %}
 
 <link rel="stylesheet" href="{{ 'bulk-order.css' | asset_url }}" media="print" onload="this.media='all'">

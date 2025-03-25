@@ -32,7 +32,6 @@ class BulkOrderForm extends HTMLElement {
       "bulk-order-form .quantity__input"
     );
     if (this.addToCartButton.getAttribute("aria-disabled") === "true") return;
-
     this.handleErrorMessage();
 
     // process all items to add
@@ -77,7 +76,9 @@ class BulkOrderForm extends HTMLElement {
             errors: response.errors || response.description,
             message: response.message,
           });
-          this.handleErrorMessage(response.description);
+          this.handleErrorMessage(response.message);
+          this.error = true;
+          return;
         } else if (!this.cart) {
           window.location = theme.routes.cart_url;
           return;
@@ -110,13 +111,13 @@ class BulkOrderForm extends HTMLElement {
         }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error(error);
       })
       .finally(() => {
         this.addToCartButton.classList.remove("loading");
+        this.addToCartButton.removeAttribute("aria-disabled");
         if (this.cart && this.cart.classList.contains("is-empty"))
           this.cart.classList.remove("is-empty");
-        if (!this.error) this.addToCartButton.removeAttribute("aria-disabled");
       });
   }
   handleErrorMessage(errorMessage = false) {
@@ -151,9 +152,6 @@ class BulkOrderForm extends HTMLElement {
         const searchParams = new URL(
           window.location.protocol + window.location.hostname + scrollURL
         ).searchParams;
-        for (const [key, value] of searchParams) {
-          console.log(key, value);
-        }
 
         if (scrollURL) {
           fetch(scrollURL, { method: "GET" })
@@ -191,10 +189,9 @@ class BulkOrderForm extends HTMLElement {
                 productListFoot.parentNode.insertBefore(more, productListFoot);
               }
 
-              // update number of variants on the page
+              // update number of results on the page
               this.body.dataset.numVariants =
                 parseInt(this.body.dataset.numVariants) + filteredData.length;
-
               if (
                 searchParams.get("q") ||
                 searchParams.get("facets__search-input")
