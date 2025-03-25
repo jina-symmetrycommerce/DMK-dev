@@ -50,6 +50,7 @@
 
 .variant-image img {
   width: 100%;
+  vertical-align: middle;
 }
 
 @media screen and (min-width: 750px) {
@@ -68,9 +69,17 @@
 .variant-title-price {
   flex: 5;
 }
-.variant-title,
 .variant-price {
   margin: 0;
+}
+
+.variant-title {
+  margin: 0;
+  color: rgb(var(--color-foreground), 0.7);
+}
+
+.product-title:has(+ .variant-title):after {
+  content: " •";
 }
 
 @media screen and (min-width: 750px) {

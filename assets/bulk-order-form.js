@@ -10,11 +10,10 @@ class BulkOrderForm extends HTMLElement {
     this.searchBy = this.querySelector("#search-by");
     this.addToCartButton = this.querySelector("#bulk-order-form__submit");
     this.cart = document.querySelector("mini-cart");
+    this.body = document.getElementById("bulk-order-body");
     this.hideErrors = this.dataset.hideErrors === "true";
 
     this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
-    // this.search.addEventListener("input", this.onSearchInput.bind(this));
-    // this.searchBy.addEventListener("input", this.onSearchInput.bind(this));
 
     let timeoutId;
     window.addEventListener("scroll", () => {
@@ -23,7 +22,10 @@ class BulkOrderForm extends HTMLElement {
         this.infiniteScroll();
       }, 200); // Debounce the scroll event
     });
+    this.body.dataset.numVariants =
+      this.body.querySelectorAll(".variant-row").length;
   }
+
   onSubmitHandler(evt) {
     evt.preventDefault();
     this.quantities = document.querySelectorAll(
@@ -146,21 +148,28 @@ class BulkOrderForm extends HTMLElement {
 
       if (scrollNode && scrollNode.style.display !== "none") {
         const scrollURL = scrollLink?.getAttribute("href");
+        const searchParams = new URL(
+          window.location.protocol + window.location.hostname + scrollURL
+        ).searchParams;
+        for (const [key, value] of searchParams) {
+          console.log(key, value);
+        }
 
         if (scrollURL) {
           fetch(scrollURL, { method: "GET" })
             .then((response) => response.text())
-            .then((data) => {
+            .then((html) => {
               // Remove loading feedback
               const loadingNode = scrollNode.nextElementSibling;
               if (loadingNode) loadingNode.remove();
 
               const parser = new DOMParser();
-              const htmlDocument = parser.parseFromString(data, "text/html");
+              const htmlDocument = parser.parseFromString(html, "text/html");
               const filteredData =
                 htmlDocument.querySelectorAll(".variant-row");
               const productListFoot = this.querySelector("#product-list-foot");
               let n = 1;
+
               filteredData.forEach((product) => {
                 // nice cascade effect
                 product.style.animationDelay = 0.15 * n + "s";
@@ -180,6 +189,19 @@ class BulkOrderForm extends HTMLElement {
               if (productListFoot && nextPage < totalPages) {
                 const more = this.createMoreLink(nextPage, totalPages);
                 productListFoot.parentNode.insertBefore(more, productListFoot);
+              }
+
+              // update number of variants on the page
+              this.body.dataset.numVariants =
+                parseInt(this.body.dataset.numVariants) + filteredData.length;
+
+              if (
+                searchParams.get("q") ||
+                searchParams.get("facets__search-input")
+              ) {
+                FacetSearch.renderProductCount(html, true);
+              } else {
+                FacetFiltersForm.renderProductCount(true);
               }
             })
             .catch((error) => console.error("Error fetching data:", error))

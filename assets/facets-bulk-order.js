@@ -3,7 +3,8 @@ let filterData = [];
 class FacetFiltersForm extends HTMLElement {
   constructor() {
     super();
-
+    FacetFiltersForm.bulkOrderBody = document.getElementById("bulk-order-body");
+    FacetFiltersForm.locales = document.getElementById("bulk-order-locales");
     this.onActiveFilterClick = this.onActiveFilterClick.bind(this);
     this.debouncedOnSubmit = debounce((event) => {
       this.onSubmitHandler(event);
@@ -12,6 +13,7 @@ class FacetFiltersForm extends HTMLElement {
       "input",
       this.debouncedOnSubmit.bind(this)
     );
+    FacetFiltersForm.renderProductCount();
   }
 
   static setListeners() {
@@ -22,13 +24,11 @@ class FacetFiltersForm extends HTMLElement {
         : FacetFiltersForm.searchParamsInitial;
       const searchParamsObj = new URLSearchParams(searchParams);
       if (searchParams === FacetFiltersForm.searchParamsPrev) {
-        FacetFiltersForm.renderSearchInput();
         return;
       }
       console.log(!searchParamsObj.get("facets__search-input"));
       if (!searchParamsObj.get("facets__search-input")) {
         FacetFiltersForm.renderPage(searchParams, null, false);
-        FacetFiltersForm.renderSearchInput();
       }
     };
     window.addEventListener("popstate", onHistoryChange);
@@ -78,7 +78,7 @@ class FacetFiltersForm extends HTMLElement {
         filterData = [...filterData, { html, url }];
         FacetFiltersForm.renderFilters(html, event);
         FacetFiltersForm.renderBulkOrderProducts(html);
-        FacetFiltersForm.renderProductCount(html);
+        FacetFiltersForm.renderProductCount();
       })
       .catch((e) => {
         console.error(e);
@@ -89,7 +89,7 @@ class FacetFiltersForm extends HTMLElement {
     const html = filterData.find(filterDataUrl).html;
     FacetFiltersForm.renderFilters(html, event);
     FacetFiltersForm.renderBulkOrderProducts(html);
-    FacetFiltersForm.renderProductCount(html);
+    FacetFiltersForm.renderProductCount();
   }
 
   static renderBulkOrderProducts(html) {
@@ -98,13 +98,27 @@ class FacetFiltersForm extends HTMLElement {
       .getElementById("bulk-order-body").innerHTML;
   }
 
-  static renderProductCount(html) {
-    const dom = new DOMParser().parseFromString(html, "text/html");
-    const count = dom.getElementById("ProductCount").innerHTML;
+  static renderProductCount(infiniteScroll = false) {
+    if (!infiniteScroll) {
+      // update number of variants on the page
+      FacetFiltersForm.bulkOrderBody.dataset.numVariants =
+        document.querySelectorAll(".variant-row").length;
+    }
+    // update results
+    const numVariants = parseInt(
+      document.getElementById("bulk-order-body").dataset.numVariants
+    );
+    const localesJSON = JSON.parse(FacetFiltersForm.locales.textContent);
+    const count =
+      numVariants == 1
+        ? localesJSON["product-one"].replace("1", numVariants)
+        : localesJSON["product-other"].replace("#", numVariants);
+
     console.log("filter", count);
     const container = document.getElementById("ProductCount");
     const containerMobile = document.getElementById("ProductCountMobile");
     const containerDesktop = document.getElementById("ProductCountDesktop");
+
     if (container) {
       container.innerHTML = count;
       container.classList.remove("loading");
@@ -278,10 +292,8 @@ class FacetFiltersForm extends HTMLElement {
 
   onSubmitHandler(event) {
     event.preventDefault();
-    console.log("filter form submit");
-    if (event && event.target.id == "facets__search-input") return;
-    // FacetSearch.renderPage("", null, false);
-    FacetFiltersForm.renderSearchInput();
+    console.log("filter form submit event", event);
+    // FacetFiltersForm.renderSearchInput();
 
     const currentForm = event.target.closest("form");
     if (currentForm.id === "FacetFiltersFormMobile") {
@@ -333,18 +345,22 @@ class FacetSearch extends HTMLElement {
     this.searchInput = this.querySelector(".facets__search-input");
     this.mobileSearchInput = this.querySelector(".mobile-facets__search-input");
     this.mobileSearchSubmit = this.querySelector("#mobileSearchSubmit");
+    FacetSearch.bulkOrderBody = document.getElementById("bulk-order-body");
+    FacetSearch.locales = document.getElementById("bulk-order-locales");
     FacetSearch.fetchSearchBulkOrderBodyId();
     this.debouncedOnSubmit = debounce((event) => {
       this.onSubmitHandler(event);
     }, 500);
-    this.mobileSearchSubmit && this.mobileSearchSubmit.addEventListener(
-      "click", 
-      this.debouncedOnSubmit.bind(this)
-    )
-    this.searchInput && this.searchInput.addEventListener(
-      "input",
-      this.debouncedOnSubmit.bind(this)
-    );
+    this.mobileSearchSubmit &&
+      this.mobileSearchSubmit.addEventListener(
+        "click",
+        this.debouncedOnSubmit.bind(this)
+      );
+    this.searchInput &&
+      this.searchInput.addEventListener(
+        "input",
+        this.debouncedOnSubmit.bind(this)
+      );
   }
 
   static fetchSearchBulkOrderBodyId() {
@@ -400,6 +416,9 @@ class FacetSearch extends HTMLElement {
     if (searchParamsObj.get("facets__search-input")) {
       const query = searchParamsObj.get("facets__search-input");
       url = `/search?section_id=${this.searchBulkOrderBodyId}&q=${query}&type=product&view=bulk-order`;
+    } else {
+      searchParamsObj.delete("facets__search-input");
+      searchParams = searchParamsObj.toString();
     }
     const filterDataUrl = (element) => element.url === url;
     filterData.some(filterDataUrl)
@@ -417,7 +436,6 @@ class FacetSearch extends HTMLElement {
         filterData = [...filterData, { html, url }];
         FacetSearch.renderBulkOrderProducts(html);
         FacetSearch.renderProductCount(html);
-        FacetSearch.renderSearchInput(html);
       })
       .catch((e) => {
         console.error(e);
@@ -428,7 +446,6 @@ class FacetSearch extends HTMLElement {
     const html = filterData.find(filterDataUrl).html;
     FacetSearch.renderBulkOrderProducts(html);
     FacetSearch.renderProductCount(html);
-    FacetSearch.renderSearchInput(html);
   }
 
   static renderBulkOrderProducts(html) {
@@ -437,12 +454,26 @@ class FacetSearch extends HTMLElement {
       .getElementById("bulk-order-body").innerHTML;
   }
 
-  static renderProductCount(html) {
-    let count;
+  static renderProductCount(html, infiniteScroll = false) {
     const dom = new DOMParser().parseFromString(html, "text/html");
-    count = dom.getElementById("ProductCount")
-      ? dom.getElementById("ProductCount").innerHTML
-      : "0 results";
+    // recount if not from infinite scroll
+    if (!infiniteScroll) {
+      // update locales
+      FacetSearch.locales.innerHTML =
+        dom.getElementById("bulk-order-locales").innerHTML;
+      // update number of variants on the page
+      FacetSearch.bulkOrderBody.dataset.numVariants =
+        dom.querySelectorAll(".variant-row").length;
+    }
+    const localesJSON = JSON.parse(FacetSearch.locales.textContent);
+    // update results
+    const numVariants = parseInt(
+      document.getElementById("bulk-order-body").dataset.numVariants
+    );
+    const count =
+      numVariants == 1
+        ? localesJSON["search-one"].replace("1", numVariants)
+        : localesJSON["search-other"].replace("#", numVariants);
     console.log("count", count);
     const container = document.getElementById("ProductCount");
     const containerMobile = document.getElementById("ProductCountMobile");
@@ -502,7 +533,7 @@ class FacetSearch extends HTMLElement {
     this.mobileSearchInput.value = this.mobileSearchInput.value.trim();
     return new URLSearchParams(
       `${this.mobileSearchInput.name}=${this.mobileSearchInput.value}`
-    )
+    );
   }
   onSubmitForm(searchParams, event) {
     FacetSearch.renderPage(searchParams, event);
@@ -510,13 +541,20 @@ class FacetSearch extends HTMLElement {
 
   onSubmitHandler(event) {
     event.preventDefault();
-    FacetFiltersForm.renderPage("", null, false);
-    console.log('this in on submit: ',this);
-    console.log('event in on submit: ',event);
-    if(event.target === this.mobileSearchSubmit){
+    if (this.searchInput.value) {
+      FacetFiltersForm.renderPage("", null, false);
+    } else {
+      console.log("eheehhehehehheheh");
+      FacetFiltersForm.renderPage("", null, true);
+      return;
+    }
+
+    console.log("this in on submit: ", this);
+    console.log("event in on submit: ", event);
+    if (event.target === this.mobileSearchSubmit) {
       const searchParams = this.createMobileSearchParams();
       this.onSubmitForm(searchParams.toString(), this.mobileSearchInput.value);
-    }else{
+    } else {
       const searchParams = this.createSearchParams();
       this.onSubmitForm(searchParams.toString(), event);
     }

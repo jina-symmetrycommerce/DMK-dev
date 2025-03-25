@@ -790,23 +790,6 @@
 
     <div class="product-count{% unless enable_viewing %} medium-hide large-up-hide{% endunless %}" role="status">
       <p id="ProductCount" class="product-count__text">
-        {% assign product_variant_count = 0 %}
-        {% if results.products %}
-          {% for result in results.products %}
-              {% assign product_variant_count = product_variant_count | plus: result.variants.size %}
-          {% endfor %}
-        {% else %}
-          {% for result in results.results %}
-              {% assign product_variant_count = product_variant_count | plus: result.variants.size %}
-          {% endfor %}
-        {% endif %}
-        {%- liquid
-          if results.results_count
-            echo 'templates.search.results_with_count' | t: terms: results.terms, count: product_variant_count
-          else
-            echo 'products.facets.product_count_simple_bulk_order' | t: count: product_variant_count
-          endif
-        -%}
       </p>
       <div class="loading-overlay__spinner">
         {% render 'icon', icon: 'spinner' %}
@@ -814,3 +797,12 @@
     </div>
   </div>
 </div>
+
+<script type="application/json" id="bulk-order-locales">
+  {
+    "search-one":  {{ 'templates.search.results_with_count' | t: terms: results.terms, count: 1 | json }},
+    "search-other": {{ 'templates.search.results_with_count' | t: terms: results.terms, count: "#" | json }},
+    "product-one": {{ 'products.facets.product_count_simple_bulk_order' | t: count: 1 | json }},
+    "product-other": {{ 'products.facets.product_count_simple_bulk_order' | t: count: "#" | json }}
+  }
+ </script>
