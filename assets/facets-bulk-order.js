@@ -22,10 +22,12 @@ class FacetFiltersForm extends HTMLElement {
         : FacetFiltersForm.searchParamsInitial;
       const searchParamsObj = new URLSearchParams(searchParams);
       if (searchParams === FacetFiltersForm.searchParamsPrev) {
+        FacetFiltersForm.renderSearchInput();
         return;
       }
       if (!searchParamsObj.get("facets__search-input")) {
         FacetFiltersForm.renderPage(searchParams, null, false);
+        FacetFiltersForm.renderSearchInput();
       }
     };
     window.addEventListener("popstate", onHistoryChange);
@@ -288,6 +290,11 @@ class FacetFiltersForm extends HTMLElement {
 
   onSubmitHandler(event) {
     event.preventDefault();
+    console.log("filter form submit");
+    if (event && event.target.id == "facets__search-input") return;
+    // FacetSearch.renderPage("", null, false);
+    FacetFiltersForm.renderSearchInput();
+
     const currentForm = event.target.closest("form");
     if (currentForm.id === "FacetFiltersFormMobile") {
       const searchParams = this.createSearchParams(currentForm);
@@ -344,12 +351,20 @@ class FacetSearch extends HTMLElement {
     FacetSearch.fetchSearchBulkOrderBodyId();
     this.debouncedOnSubmit = debounce((event) => {
       this.onSubmitHandler(event);
-    }, 500);
+    }, 750);
     this.mobileSearchSubmit &&
       this.mobileSearchSubmit.addEventListener(
         "click",
         this.debouncedOnSubmit.bind(this)
       );
+    this.searchInput &&
+      this.searchInput.addEventListener("input", (event) => {
+        console.log(
+          "logging event, not debounced: ",
+          event.target.value,
+          event
+        );
+      });
     this.searchInput &&
       this.searchInput.addEventListener(
         "input",
@@ -382,6 +397,7 @@ class FacetSearch extends HTMLElement {
   }
 
   static renderPage(searchParams, event, updateURLHash = true) {
+    console.log("render page func. params are: ", searchParams, event);
     const searchParamsObj = new URLSearchParams(searchParams);
     FacetSearch.searchParamsPrev = searchParams;
     const facetDrawer = document.getElementById("FacetDrawer");
@@ -436,6 +452,7 @@ class FacetSearch extends HTMLElement {
     const html = filterData.find(filterDataUrl).html;
     FacetSearch.renderBulkOrderProducts(html);
     FacetSearch.renderProductCount(html);
+    FacetSearch.renderSearchInput(html);
   }
 
   static renderBulkOrderProducts(html) {
@@ -481,6 +498,21 @@ class FacetSearch extends HTMLElement {
     }
   }
 
+  static renderSearchInput(html) {
+    console.log("search input");
+    const dom = new DOMParser().parseFromString(html, "text/html");
+
+    const searchInputFetchValue = dom.getElementById("Search-In-Template")
+      ? dom.getElementById("Search-In-Template").value
+      : "";
+    const searchInputsToUpdate = document.querySelectorAll(
+      ".facets__search-input"
+    );
+    searchInputsToUpdate.forEach((element) => {
+      element.value = searchInputFetchValue;
+    });
+  }
+
   static updateURLHash(searchParams) {
     history.pushState(
       { searchParams },
@@ -515,16 +547,12 @@ class FacetSearch extends HTMLElement {
 
   onSubmitHandler(event) {
     event.preventDefault();
-    if (this.searchInput?.value || this.mobileSearchInput?.value) {
-      FacetFiltersForm.renderPage("", null, false);
-    } else {
-      FacetFiltersForm.renderPage("", null, true);
-      return;
-    }
+    FacetFiltersForm.renderPage("", null, false);
     console.log("this in on submit: ", this);
     console.log("event in on submit: ", event);
     if (event.target === this.mobileSearchSubmit) {
       const searchParams = this.createMobileSearchParams();
+      console.log("mobile params: ", searchParams);
       this.onSubmitForm(searchParams.toString(), this.mobileSearchInput.value);
     } else {
       const searchParams = this.createSearchParams();
@@ -541,14 +569,25 @@ FacetSearch.setListeners();
 class FacetRemove extends HTMLElement {
   constructor() {
     super();
-
-    this.querySelector("a").addEventListener("click", (event) => {
-      event.preventDefault();
-      const form =
-        this.closest("facet-filters-form") ||
-        document.querySelector("facet-filters-form");
-      form.onActiveFilterClick(event);
-    });
+    this.querySelector("#clearSearchButton") &&
+      this.querySelector("#clearSearchButton").addEventListener("click", () => {
+        const searchForm =
+          this.closest("facet-search") ||
+          document.querySelector("facet-search");
+        const drawerSummary = document.querySelector("facet-drawer summary");
+        searchForm.mobileSearchInput.value = "";
+        const searchParams = searchForm.createMobileSearchParams();
+        searchForm.onSubmitForm(searchParams.toString(), "");
+        drawerSummary && drawerSummary.click();
+      });
+    this.querySelector("a") &&
+      this.querySelector("a").addEventListener("click", (event) => {
+        event.preventDefault();
+        const form =
+          this.closest("facet-filters-form") ||
+          document.querySelector("facet-filters-form");
+        form.onActiveFilterClick(event);
+      });
   }
 }
 customElements.define("facet-remove", FacetRemove);
@@ -715,3 +754,77 @@ class ShowMoreButton extends HTMLElement {
   }
 }
 customElements.define("show-more-button", ShowMoreButton);
+
+class FilterSearchToggle extends HTMLElement {
+  constructor() {
+    super();
+    this.facetToggleButtons = this.querySelectorAll("[data-facet-toggle]");
+    this.searchButton = this.querySelector('[data-facet-toggle="search"]');
+    this.filterButton = this.querySelector('[data-facet-toggle="filter"]');
+    this.shownFacet;
+    this.standardizeFacetElements = this.standardizeFacetElements.bind(this);
+  }
+  standardizeFacetElements() {
+    console.log("shown facet: ", this.shownFacet);
+    if (window.innerWidth > 749 && this.shownFacet === "filter") {
+      const searchWidth = document.querySelector(
+        ".facets-sort-filter__wrapper"
+      ).offsetWidth;
+      document.querySelector(
+        "facet-search input"
+      ).style.width = `${searchWidth}px`;
+      const widestButton = [...this.facetToggleButtons]
+        .map((button) => button.offsetWidth)
+        .sort((a, b) => {
+          return b - a;
+        })[0];
+      this.facetToggleButtons.forEach((button) => {
+        button.style.width = `${widestButton}px`;
+      });
+    }
+  }
+  setDefaultShownFacet() {
+    const activeToggleParam = window.location.search.split("=")[0] || null;
+    const searchFacet = document.querySelector('[data-facet="search"]');
+    const filterFacet = document.querySelector('[data-facet="filter"]');
+    this.shownFacet =
+      activeToggleParam === "?facets__search-input" ? "search" : "filter";
+    const searchQuery =
+      this.shownFacet === "search" ? window.location.search.split("=")[1] : "";
+    console.log("we should be showing ", this.shownFacet);
+
+    if (this.shownFacet === "search") {
+      searchFacet.querySelector("#facets__search-input").value = searchQuery;
+      searchFacet.classList.remove("hidden");
+      this.filterButton.classList.remove("hide-toggle");
+      filterFacet.classList.add("hidden");
+      this.searchButton.classList.add("hide-toggle");
+    } else if (this.shownFacet === "filter") {
+      filterFacet.classList.remove("hidden");
+      this.searchButton.classList.remove("hide-toggle");
+      searchFacet.classList.add("hidden");
+      this.filterButton.classList.add("hide-toggle");
+    }
+  }
+  toggleShownFacet() {
+    this.shownFacet = this.shownFacet === "search" ? "filter" : "search";
+    document.querySelectorAll("[data-facet]").forEach((el) => {
+      console.log(el.dataset.facet);
+      el.classList.toggle("hidden");
+    });
+    this.facetToggleButtons.forEach((button) => {
+      button.classList.toggle("hide-toggle");
+    });
+  }
+  connectedCallback() {
+    this.setDefaultShownFacet();
+    this.standardizeFacetElements();
+    this.facetToggleButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        this.toggleShownFacet();
+      });
+    });
+    window.addEventListener("resize", this.standardizeFacetElements);
+  }
+}
+customElements.define("filter-search-toggle", FilterSearchToggle);

@@ -4,7 +4,7 @@
 
   Accepts:
   - results: {Object} Collection or Search object
-  - enable_sticky_facet: {Boolean} Shows on the screen as customers scroll up when true x
+  - enable_sticky_facet: {Boolean} Shows on the screen as customers scroll up when true
   - enable_filtering: {Boolean} Show filtering when true
   - enable_filtering_color_swatches: {Boolean} Show color swatches in the filter when true
   - enable_sorting: {Boolean} Show sorting when true
@@ -42,11 +42,7 @@
   </div>
   <div class="bulk-order-container">
     <form id="bulk-order-quantities" class="bulk-order-quantities" data-id="{{ section.id }}">
-      <div
-        class="bulk-order-body desktop-table"
-        id="bulk-order-body"
-        data-id="{{ section.id }}"
-      >
+      <div class="bulk-order-body desktop-table" id="bulk-order-body" data-id="{{ section.id }}">
         {% if results.products %}
           {% paginate results.products by 10 %}
             {% for product in results.products %}
@@ -65,7 +61,7 @@
                     {% elsif product.featured_image != blank %}
                       <img
                         alt="
-                          {{- product.title -}}
+                            {{- product.title -}}
                           {% if variant.title != 'Default Title' %}
                             {{ variant.title }}
                           {% endif %} image
@@ -151,7 +147,7 @@
                       {% elsif product.featured_image != blank %}
                         <img
                           alt="
-                            {{- product.title -}}
+                              {{- product.title -}}
                             {% if variant.title != 'Default Title' %}
                               {{ variant.title }}
                             {% endif %} image

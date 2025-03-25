@@ -45,15 +45,17 @@
   <div class="page-width{% if enable_filtering and filter_type == 'drawer' %} facets-container-drawer{% endif %}">
     {%- if enable_filtering or enable_sorting or enable_viewing -%}
       <div class="filters-search-wrapper">
-        <div class="facet__toggle-wrapper small-hide">
+        <filter-search-toggle class="facet__toggle-wrapper small-hide">
           <button for="filter" class="facets__toggle-label button button--secondary button--small hide-toggle" data-facet-toggle="filter">
             <span>filter products</span>
           </button>
           <button class="facets__toggle-label button button--secondary button--small" data-facet-toggle="search" >
             <span>search products</span>
           </button>
-        </div>
+        </filter-search-toggle>
+        {%comment %}
         <script>
+        /*
           const facetToggleButtons = document.querySelectorAll('[data-facet-toggle]');
           const standardizeFacetElements = () => {
             const searchWidth = document.querySelector('.facets-sort-filter__wrapper').offsetWidth;
@@ -84,7 +86,9 @@
               toggleShownFacet();
             })
           })
+            */
         </script>
+        {% endcomment %}
         <facet-filters-form class="facets small-hide" data-facet="filter">
           <form id="FacetSortFiltersForm" class="facets__form"{% if enable_filtering %} data-filter-type="{{ filter_type }}"{% endif %}>
             {%- if results.terms -%}
@@ -476,7 +480,7 @@
                   <div class="no-js-hidden mobile-facets__footer">
                       <button class="button" id="mobileSearchSubmit">submit search</button>
                       <facet-remove>
-                        <a href="{{ results.url }}" class="mobile-facets__clear link link--underline">{{ 'products.facets.clear' | t }}</a>
+                        <button id="clearSearchButton" class="mobile-facets__clear link link--underline">Clear</button>
                       </facet-remove>
                     </div>
                 </facet-search>
